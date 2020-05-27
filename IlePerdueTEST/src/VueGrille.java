@@ -15,20 +15,23 @@ class VueGrille extends JPanel implements Observer {
     private CModele modele;
     /** Définition d'une taille (en pixels) pour l'affichage des Zones. */
     private final static int TAILLE = 12;
+    private JLabel j;
 
     /** Constructeur. */
-    public VueGrille(CModele modele) {
-	this.modele = modele;
-	/** On enregistre la vue [this] en tant qu'observateur de [modele]. */
-	modele.addObserver(this);
-	/**
-	 * Définition et application d'une taille fixe pour cette zone de
-	 * l'interface, calculée en fonction du nombre de Zones et de la
-	 * taille d'affichage.
-	 */
-	Dimension dim = new Dimension(TAILLE*CModele.COTE,
-				      TAILLE*CModele.COTE);
-	this.setPreferredSize(dim);
+    public VueGrille(CModele modele, JLabel j) {
+    	
+		this.modele = modele;
+		this.j = j;
+		/** On enregistre la vue [this] en tant qu'observateur de [modele]. */
+		modele.addObserver(this);
+		/**
+		 * Définition et application d'une taille fixe pour cette zone de
+		 * l'interface, calculée en fonction du nombre de Zones et de la
+		 * taille d'affichage.
+		 */
+		Dimension dim = new Dimension(TAILLE*CModele.COTE,
+					      TAILLE*CModele.COTE);
+		this.setPreferredSize(dim);
     }
 
     /**
@@ -37,7 +40,10 @@ class VueGrille extends JPanel implements Observer {
      * modèle. Ici on se content de réafficher toute la grille avec la méthode
      * prédéfinie [repaint].
      */
-    public void update() { repaint(); }
+    public void update() { 
+    	repaint();
+    	j.setText("              Il reste " + (3 - modele.nbActions) + " actions");
+    	}
 
     /**
      * Les éléments graphiques comme [JPanel] possèdent une méthode
