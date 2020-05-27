@@ -31,19 +31,18 @@ class Controleur implements ActionListener {
      * méthode [avance] du modèle.
      */
     public void actionPerformed(ActionEvent e) {
-    	
     	if(bouton == commandes.boutonAvance) {
-    		modele.nbActions = 0;
     		modele.avance();
+    		modele.nbActions = 0;
     	}
-    	else if(bouton == commandes.boutonAsseche)
-    		modele.asseche();
     	else if(bouton == commandes.boutonGauche)
     		modele.gauche();
     	else if(bouton == commandes.boutonDroite)
     		modele.droite();
     	else if(bouton == commandes.boutonHaut)
     		modele.haut();
+    	else if(bouton == commandes.boutonAsseche)
+    		modele.asseche();
     	else
     		modele.bas();
     	
@@ -72,4 +71,5 @@ class Controleur implements ActionListener {
     	else if( (modele.tour)%3 == 1) modele.j = modele.j2;
     	else modele.j = modele.j3;
     }
+    
 }
