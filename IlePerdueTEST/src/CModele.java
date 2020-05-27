@@ -165,14 +165,17 @@ class CModele extends Observable {
     
     
     public void asseche() {
-
+    	
+    	//if(compteZoneInnonde(j.getX(), j.getY()) == 1) {
+    	
+    	
     	//Si le joueur devient innondé, il peut s'assécher et redevenir une case joueur
     		if(getZone(j.getX(), j.getY()).z == typeZone.innonde)
     			getZone(j.getX(), j.getY()).z = typeZone.joueur;
     	
-    		else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) 
-        	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
-    		
+    		else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) 		
+	    		getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
+	    	
 	    	else if(getZone(j.getX() - 1, j.getY()).z == typeZone.innonde)
 	    		getZone(j.getX() - 1, j.getY()).z = typeZone.normal;
 	    	
@@ -182,10 +185,18 @@ class CModele extends Observable {
 	    	else if(getZone(j.getX(), j.getY() - 1).z == typeZone.innonde)
 	    		getZone(j.getX(), j.getY() - 1).z = typeZone.normal;
     		
-    	nbActions+=1;
-    	notifyObservers();
+    		nbActions +=1 ;	
+  	
+    	/** else {
+    		//Je ne sais pas comment faire lorsqu'il y a + d'1 case adjacente innondée
+    	}
+    	
+    	//nbActions+=1;
+    } **/
     }
-
+    
+    
+    
 
     /**
      * Méthode auxiliaire : compte le nombre de voisines vivantes d'une

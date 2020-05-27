@@ -9,7 +9,7 @@ import javax.swing.*;
  *  - Une zone d'affichage où on voit l'ensemble des Zones.
  *  - Une zone de commande avec un bouton pour passer à la génération suivante.
  */
-class CVue{
+class CVue {
     /**
      * JFrame est une classe fournie pas Swing. Elle représente la fenêtre
      * de l'application graphique.
@@ -27,9 +27,7 @@ class CVue{
 	/** Définition de la fenêtre principale. */
 	frame = new JFrame();
 	JLabel tourJoueur = new JLabel("<html><h1>C'est le tour du joueur en rouge</h1><html>", JLabel.CENTER);
-	JLabel actions = new JLabel("              Il reste " + (3 - modele.nbActions) + " actions", JLabel.LEFT);
 	frame.add(tourJoueur);
-	frame.add(actions);
 	frame.setTitle("Jeu de la vie de Conway");
 	
 	/**
@@ -50,7 +48,7 @@ class CVue{
 	frame.setLayout(new FlowLayout());
 
 	/** Définition des deux vues et ajout à la fenêtre. */
-	grille = new VueGrille(modele, actions);
+	grille = new VueGrille(modele);
 	frame.add(grille);
 	commandes = new VueCommandes(modele);
 	frame.add(commandes);
@@ -75,5 +73,4 @@ class CVue{
 	frame.setSize(600, 400);
 	frame.setVisible(true);
     }
-    
 }
