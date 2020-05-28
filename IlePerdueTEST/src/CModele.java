@@ -9,7 +9,7 @@ import java.util.*;
  * Voir la méthode [avance()] pour cela.
  */
 class CModele extends Observable {
-    /** On fixe la taille de la grille. */
+	/** On fixe la taille de la grille. */
     // static final int COTE=20, COTE=20;
 	public VueCommandes commandes;
 	public Controleur ctrl;
@@ -22,7 +22,10 @@ class CModele extends Observable {
     public Joueur j2 = new Joueur(COTE, (COTE+1)/2);
     public Joueur j3 = new Joueur(1, (COTE+1)/2);
     private Zone heliport = new Zone(this, false, (COTE+1)/2, COTE, typeZone.heliport);
-    
+    private Zone air = new Zone(this, false,1+new Random().nextInt(((COTE+1)/2)-1), 1+new Random().nextInt(((COTE+1)/2)-1) , typeZone.air);
+    private Zone terre = new Zone(this, false,((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2), 1+new Random().nextInt(((COTE+1)/2)-2) , typeZone.terre);
+    private Zone eau = new Zone(this, false,1+new Random().nextInt(((COTE+1)/2)-1) , ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , typeZone.eau);
+    private Zone feu = new Zone(this, false,((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , typeZone.feu);
     //Permet d'alterner les 3 joueurs, initialisé à J1 pour dire que le J1 commence le jeu (celui en haut)
     public Joueur j = j1;
 
@@ -42,24 +45,55 @@ class CModele extends Observable {
 		Zones[j2.getX()][j2.getY()] = new Zone(this, true, j2.getX(), j2.getY(), typeZone.joueur);
 		Zones[j3.getX()][j3.getY()] = new Zone(this, true, j3.getX(), j3.getY(), typeZone.joueur);
 		Zones[(COTE+1)/2][COTE] = heliport;
+		Zones[1+new Random().nextInt(((COTE+1)/2)-1)][1+new Random().nextInt(((COTE+1)/2)-1)] = air;
+		Zones[((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)][1+new Random().nextInt(((COTE+1)/2)-2)] = terre;
+		Zones[1+new Random().nextInt(((COTE+1)/2)-1)][((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)] = eau;
+		Zones[((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)][((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)] = feu;
     }
 
     
     
+   /**  
+    * Pour tester la fonction evalue
+    * 
+    * public void compteTypeZone() {	
+    	int resInnonde = 0;
+    	int resSubmerge = 0;
+    	int resNormale = 0;
+    	for(int i=0; i<COTE+2; i++) {
+			for(int j=0; j<COTE+2; j++) {
+				if (Zones[i][j].z == typeZone.normal) resNormale +=1;
+				if (Zones[i][j].z == typeZone.innonde) resInnonde +=1;
+				if (Zones[i][j].z == typeZone.submerge) resSubmerge +=1;
+			}
+    	}
+    	System.out.println("il y a " + resNormale + " cases normales ");
+    	System.out.println("il y a " + resInnonde + " cases innondees ");
+    	System.out.println("il y a " + resSubmerge + " cases submergees ");
+    } **/
+    
+    
     
     protected Zone[][] evalue() {  	
-        for(int k = 0; k < 3; k++) {
+        
+    	int k = 0;
+    	
+    	while(k < 3) {
         	int a = new Random().nextInt(COTE+1); if (a == 0) a = 1; // =1 Pour éviter que les cases aléatoires soient celles des bordures hors cadre
         	int b = new Random().nextInt(COTE+1); if (b == 0) b = 1;
-
-        		if(Zones[a][b].z == typeZone.normal)
-            		Zones[a][b].z = typeZone.innonde;
-        		else if(Zones[a][b].z == typeZone.joueur)
-        			Zones[a][b].z = typeZone.innonde;
-        		else if(Zones[a][b].z == typeZone.innonde)
-            		Zones[a][b].z = typeZone.submerge;
-            	  else
-            		Zones[a][b].z = typeZone.submerge;       	
+        	
+        	if(Zones[a][b].z == typeZone.submerge) k+= 0;
+        	else {
+        		if(Zones[a][b].z == typeZone.normal) Zones[a][b].z = typeZone.innonde;		
+        		else if(Zones[a][b].z == typeZone.joueur) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.air) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.eau) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.feu) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.terre) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.innonde) Zones[a][b].z = typeZone.submerge;
+            	else Zones[a][b].z = typeZone.submerge;
+        		k++;
+        	}	      	
         }
         return Zones;
     }
@@ -75,6 +109,7 @@ class CModele extends Observable {
 	 *  - Ensuite, on applique les évolutions qui ont été calculées.
 	 */ 
 		evalue();
+		//compteTypeZone();
 		tour+=1;
 	/**
 	 * Pour finir, le modèle ayant changé, on signale aux observateurs
@@ -165,17 +200,14 @@ class CModele extends Observable {
     
     
     public void asseche() {
-    	
-    	//if(compteZoneInnonde(j.getX(), j.getY()) == 1) {
-    	
-    	
+
     	//Si le joueur devient innondé, il peut s'assécher et redevenir une case joueur
     		if(getZone(j.getX(), j.getY()).z == typeZone.innonde)
     			getZone(j.getX(), j.getY()).z = typeZone.joueur;
     	
-    		else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) 		
-	    		getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
-	    	
+    		else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) 
+        	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
+    		
 	    	else if(getZone(j.getX() - 1, j.getY()).z == typeZone.innonde)
 	    		getZone(j.getX() - 1, j.getY()).z = typeZone.normal;
 	    	
@@ -185,18 +217,10 @@ class CModele extends Observable {
 	    	else if(getZone(j.getX(), j.getY() - 1).z == typeZone.innonde)
 	    		getZone(j.getX(), j.getY() - 1).z = typeZone.normal;
     		
-    		nbActions +=1 ;	
-  	
-    	/** else {
-    		//Je ne sais pas comment faire lorsqu'il y a + d'1 case adjacente innondée
-    	}
-    	
-    	//nbActions+=1;
-    } **/
+    	nbActions+=1;
+    	notifyObservers();
     }
-    
-    
-    
+
 
     /**
      * Méthode auxiliaire : compte le nombre de voisines vivantes d'une

@@ -15,20 +15,23 @@ class VueGrille extends JPanel implements Observer {
     private CModele modele;
     /** Définition d'une taille (en pixels) pour l'affichage des Zones. */
     private final static int TAILLE = 12;
+    private JLabel j;
 
     /** Constructeur. */
-    public VueGrille(CModele modele) {
-	this.modele = modele;
-	/** On enregistre la vue [this] en tant qu'observateur de [modele]. */
-	modele.addObserver(this);
-	/**
-	 * Définition et application d'une taille fixe pour cette zone de
-	 * l'interface, calculée en fonction du nombre de Zones et de la
-	 * taille d'affichage.
-	 */
-	Dimension dim = new Dimension(TAILLE*CModele.COTE,
-				      TAILLE*CModele.COTE);
-	this.setPreferredSize(dim);
+    public VueGrille(CModele modele, JLabel j) {
+    	
+		this.modele = modele;
+		this.j = j;
+		/** On enregistre la vue [this] en tant qu'observateur de [modele]. */
+		modele.addObserver(this);
+		/**
+		 * Définition et application d'une taille fixe pour cette zone de
+		 * l'interface, calculée en fonction du nombre de Zones et de la
+		 * taille d'affichage.
+		 */
+		Dimension dim = new Dimension(TAILLE*CModele.COTE,
+					      TAILLE*CModele.COTE);
+		this.setPreferredSize(dim);
     }
 
     /**
@@ -37,7 +40,10 @@ class VueGrille extends JPanel implements Observer {
      * modèle. Ici on se content de réafficher toute la grille avec la méthode
      * prédéfinie [repaint].
      */
-    public void update() { repaint(); }
+    public void update() { 
+    	repaint();
+    	j.setText("              Il reste " + (3 - modele.nbActions) + " actions");
+    	}
 
     /**
      * Les éléments graphiques comme [JPanel] possèdent une méthode
@@ -89,9 +95,26 @@ class VueGrille extends JPanel implements Observer {
 		} else if(c.z == typeZone.heliport) {
 			g.setColor(Color.PINK);
 			g.fillRect(x,  y, TAILLE, TAILLE);
+		} else if(c.z == typeZone.terre) {
+			Color terre = new Color(148,87,8);
+			g.setColor(terre);
+			g.fillRect(x,  y, TAILLE, TAILLE);
+		}else if(c.z == typeZone.eau) {
+			Color eau = new Color(38,127,154);
+			g.setColor(eau);
+			g.fillRect(x,  y, TAILLE, TAILLE);
+		}else if(c.z == typeZone.feu) {
+			Color feu = new Color(255,173,28);
+			g.setColor(feu);
+			g.fillRect(x,  y, TAILLE, TAILLE);
+		} else if(c.z == typeZone.air) {
+			Color air = new Color(181,236,245);
+			g.setColor(air);
+			g.fillRect(x,  y, TAILLE, TAILLE);
 		} else {
 			g.setColor(Color.BLACK);
 			g.fillRect(x,  y,  TAILLE, TAILLE);
 		}
     }
+
 }
