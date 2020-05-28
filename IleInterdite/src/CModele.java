@@ -51,23 +51,49 @@ class CModele extends Observable {
 		Zones[((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)][((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)] = feu;
     }
 
-
+    
+    
+   /**  
+    * Pour tester la fonction evalue
+    * 
+    * public void compteTypeZone() {	
+    	int resInnonde = 0;
+    	int resSubmerge = 0;
+    	int resNormale = 0;
+    	for(int i=0; i<COTE+2; i++) {
+			for(int j=0; j<COTE+2; j++) {
+				if (Zones[i][j].z == typeZone.normal) resNormale +=1;
+				if (Zones[i][j].z == typeZone.innonde) resInnonde +=1;
+				if (Zones[i][j].z == typeZone.submerge) resSubmerge +=1;
+			}
+    	}
+    	System.out.println("il y a " + resNormale + " cases normales ");
+    	System.out.println("il y a " + resInnonde + " cases innondees ");
+    	System.out.println("il y a " + resSubmerge + " cases submergees ");
+    } **/
     
     
     
     protected Zone[][] evalue() {  	
-        for(int k = 0; k < 3; k++) {
+        
+    	int k = 0;
+    	
+    	while(k < 3) {
         	int a = new Random().nextInt(COTE+1); if (a == 0) a = 1; // =1 Pour éviter que les cases aléatoires soient celles des bordures hors cadre
         	int b = new Random().nextInt(COTE+1); if (b == 0) b = 1;
-
-        		if(Zones[a][b].z == typeZone.normal)
-            		Zones[a][b].z = typeZone.innonde;
-        		else if(Zones[a][b].z == typeZone.joueur)
-        			Zones[a][b].z = typeZone.innonde;
-        		else if(Zones[a][b].z == typeZone.innonde)
-            		Zones[a][b].z = typeZone.submerge;
-            	  else
-            		Zones[a][b].z = typeZone.submerge;       	
+        	
+        	if(Zones[a][b].z == typeZone.submerge) k+= 0;
+        	else {
+        		if(Zones[a][b].z == typeZone.normal) Zones[a][b].z = typeZone.innonde;		
+        		else if(Zones[a][b].z == typeZone.joueur) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.air) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.eau) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.feu) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.terre) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.innonde) Zones[a][b].z = typeZone.submerge;
+            	else Zones[a][b].z = typeZone.submerge;
+        		k++;
+        	}	      	
         }
         return Zones;
     }
@@ -83,6 +109,7 @@ class CModele extends Observable {
 	 *  - Ensuite, on applique les évolutions qui ont été calculées.
 	 */ 
 		evalue();
+		//compteTypeZone();
 		tour+=1;
 	/**
 	 * Pour finir, le modèle ayant changé, on signale aux observateurs
