@@ -30,7 +30,6 @@ class VueCommandes extends JPanel {
     	boutonDroite = new JButton(">");
     	boutonArtefact = new JButton("Recuperer un artefact");
     	
-    	
     	this.add(boutonAvance);
     	this.add(boutonAsseche);
     	this.add(boutonArtefact);

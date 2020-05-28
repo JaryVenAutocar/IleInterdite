@@ -30,7 +30,7 @@ class CVue{
 	JLabel actions = new JLabel("              Il reste " + (3 - modele.nbActions) + " actions", JLabel.LEFT);
 	frame.add(tourJoueur);
 	frame.add(actions);
-	frame.setTitle("Jeu de la vie de Conway");
+	frame.setTitle("Ile Interdite");
 	
 	/**
 	 * On précise un mode pour disposer les différents éléments à
@@ -75,5 +75,4 @@ class CVue{
 	frame.setSize(600, 400);
 	frame.setVisible(true);
     }
-    
 }

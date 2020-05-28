@@ -17,13 +17,14 @@ class CModele extends Observable {
 	public int nbActions = 0;
 	public int nbArtefacts = 0;
 	public int tour = 0;
+	public boolean partieGagnee = false;
 	static final int COTE = 21;
     /** On stocke un tableau de Zones. */
     private Zone[][] Zones;
     public Joueur j1 = new Joueur((COTE+1)/2, 1);
     public Joueur j2 = new Joueur(COTE, (COTE+1)/2);
     public Joueur j3 = new Joueur(1, (COTE+1)/2);
-    private Zone heliport = new Zone(this, false, (COTE+1)/2, COTE, typeZone.heliport);
+    public Zone heliport = new Zone(this, false, (COTE+1)/2, COTE, typeZone.heliport);
     private Zone air = new Zone(this, false,1+new Random().nextInt(((COTE+1)/2)-1), 1+new Random().nextInt(((COTE+1)/2)-1) , typeZone.air);
     private Zone terre = new Zone(this, false,((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2), 1+new Random().nextInt(((COTE+1)/2)-2) , typeZone.terre);
     private Zone eau = new Zone(this, false,1+new Random().nextInt(((COTE+1)/2)-1) , ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , typeZone.eau);
@@ -133,7 +134,7 @@ class CModele extends Observable {
     	}
     
     public void addKey(Joueur j) {
-    	if(Math.random() <= 0.2) {
+    	if(Math.random() <= 0.35) {
     		Key k = new Key(getRandomElement());
     		j.addKey(k);
     		/**for(int i = 0; i < j.keyList.size(); i++)
@@ -147,6 +148,7 @@ class CModele extends Observable {
     	
     	//L'ancienne case qui était celle d'un joueur ne l'est plus mtn et devient normale
     	//(à changer avec ancien état : si ancienne case était innondée, mettre innondé)
+    	
     	Zones[x][y] = new Zone(this, false, x, y, typeZone.normal);
 
     	if(x == 1) x+=1;
@@ -227,6 +229,21 @@ class CModele extends Observable {
     	//Si le joueur devient innondé, il peut s'assécher et redevenir une case joueur
     		if(getZone(j.getX(), j.getY()).z == typeZone.innonde)
     			getZone(j.getX(), j.getY()).z = typeZone.joueur;
+    		
+    		
+    		// Permet d'assecher les zones spéciales meme en etant a distance (sans etre adjacent)
+    		// Il faut modifier pour ne pouvoir le faire qu'en etant a cote
+    		/** if(air.z == typeZone.innonde)
+    			air.z = typeZone.air;
+    		
+    		else if(feu.z == typeZone.innonde)
+    			feu.z = typeZone.feu;
+    		
+    		else if(terre.z == typeZone.innonde)
+    			terre.z = typeZone.terre;
+    		
+    		else if(eau.z == typeZone.innonde)
+    			eau.z = typeZone.eau; **/
     	
     		else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) 
         	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
