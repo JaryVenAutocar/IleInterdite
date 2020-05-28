@@ -1,4 +1,5 @@
 import java.util.*;
+import java.lang.Math;
 
 /**
  * Le modèle : le coeur de l'application.
@@ -14,6 +15,7 @@ class CModele extends Observable {
 	public VueCommandes commandes;
 	public Controleur ctrl;
 	public int nbActions = 0;
+	public int nbArtefacts = 0;
 	public int tour = 0;
 	static final int COTE = 21;
     /** On stocke un tableau de Zones. */
@@ -28,7 +30,11 @@ class CModele extends Observable {
     private Zone feu = new Zone(this, false,((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , typeZone.feu);
     //Permet d'alterner les 3 joueurs, initialisé à J1 pour dire que le J1 commence le jeu (celui en haut)
     public Joueur j = j1;
+    public Key k;
 
+    
+    
+    
     /** Construction : on initialise un tableau de Zones. */
     public CModele() {
 	/**
@@ -56,7 +62,7 @@ class CModele extends Observable {
    /**  
     * Pour tester la fonction evalue
     * 
-    * public void compteTypeZone() {	
+     public void compteTypeZone() {	
     	int resInnonde = 0;
     	int resSubmerge = 0;
     	int resNormale = 0;
@@ -109,6 +115,7 @@ class CModele extends Observable {
 	 *  - Ensuite, on applique les évolutions qui ont été calculées.
 	 */ 
 		evalue();
+		addKey(j);
 		//compteTypeZone();
 		tour+=1;
 	/**
@@ -118,7 +125,23 @@ class CModele extends Observable {
 		notifyObservers();
     }
     
-
+    public element getRandomElement() {
+    	Random random = new Random();
+    	    element randomElement = element.values()[random.nextInt(element.values().length)];
+    	    System.out.println("Le joueur " + ((this.tour)%3 + 1) + " recoit la cle " + randomElement);
+    	    return randomElement;
+    	}
+    
+    public void addKey(Joueur j) {
+    	if(Math.random() <= 0.2) {
+    		Key k = new Key(getRandomElement());
+    		j.addKey(k);
+    		/**for(int i = 0; i < j.keyList.size(); i++)
+    			System.out.println(" " + j.keyList.get(i).e); **/
+    	}
+    }
+    
+    
     
     public void MoveGauche(int x, int y) {
     	
@@ -220,6 +243,36 @@ class CModele extends Observable {
     	nbActions+=1;
     	notifyObservers();
     }
+    
+    
+    
+    public void recupArtefact() {
+    	
+    	for(int i = 0; i < typeZone.values().length; i++) {
+    		
+    		typeZone temp = typeZone.values()[i];
+    		Key k = new Key(temp);
+    		
+    		if(getZone(j.getX() + 1, j.getY()).z == temp)
+        	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
+    		
+	    	else if(getZone(j.getX() - 1, j.getY()).z == temp)
+	    		getZone(j.getX() - 1, j.getY()).z = typeZone.normal;
+	    	
+	    	else if(getZone(j.getX(), j.getY() + 1).z == temp)
+	    		getZone(j.getX(), j.getY() + 1).z = typeZone.normal;
+	    	
+	    	else if(getZone(j.getX(), j.getY() - 1).z == temp)
+	    		getZone(j.getX(), j.getY() - 1).z = typeZone.normal;
+    	}
+    	
+    	nbActions+=1;
+    	nbArtefacts+=1;
+    	System.out.println("le nb d'artefacts est : " + nbArtefacts);
+		notifyObservers();
+    }
+    
+    
 
 
     /**

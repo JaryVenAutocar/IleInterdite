@@ -12,7 +12,7 @@ class VueCommandes extends JPanel {
      * référence au modèle.
      */
     private CModele modele;
-    public JButton boutonAvance, boutonAsseche, boutonGauche, boutonDroite, boutonHaut, boutonBas;
+    public JButton boutonArtefact, boutonAvance, boutonAsseche, boutonGauche, boutonDroite, boutonHaut, boutonBas;
 
     /** Constructeur. */
     public VueCommandes(CModele modele) {
@@ -24,14 +24,16 @@ class VueCommandes extends JPanel {
 	 */
     	boutonAvance = new JButton("fin de tour");
     	boutonHaut = new JButton("^");
-    	boutonAsseche = new JButton("Assécher");
+    	boutonAsseche = new JButton("Assecher");
     	boutonGauche = new JButton("<");
     	boutonBas = new JButton("v");
     	boutonDroite = new JButton(">");
+    	boutonArtefact = new JButton("Recuperer un artefact");
     	
     	
     	this.add(boutonAvance);
     	this.add(boutonAsseche);
+    	this.add(boutonArtefact);
     	this.add(boutonGauche);
     	this.add(boutonHaut);
     	this.add(boutonBas);
@@ -66,6 +68,7 @@ class VueCommandes extends JPanel {
     	Controleur Bas = new Controleur(modele, this, boutonBas);
     	Controleur Haut = new Controleur(modele, this, boutonHaut);
     	Controleur Asseche = new Controleur(modele, this, boutonAsseche);
+    	Controleur Artefact = new Controleur(modele, this, boutonArtefact);
 	/** Enregistrement du contrôleur comme auditeur du bouton. */
     	boutonAvance.addActionListener(ctrl);
     	boutonDroite.addActionListener(Droit);
@@ -73,6 +76,7 @@ class VueCommandes extends JPanel {
     	boutonBas.addActionListener(Bas);
     	boutonHaut.addActionListener(Haut);
     	boutonAsseche.addActionListener(Asseche);
+    	boutonArtefact.addActionListener(Artefact);
     	
 	
 	/**

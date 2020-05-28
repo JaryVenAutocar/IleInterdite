@@ -44,6 +44,8 @@ class Controleur implements ActionListener {
     		modele.droite();
     	else if(bouton == commandes.boutonHaut)
     		modele.haut();
+    	else if(bouton == commandes.boutonArtefact)
+    		modele.recupArtefact();
     	else
     		modele.bas();
     	
