@@ -253,21 +253,28 @@ class CModele extends Observable {
     		typeZone temp = typeZone.values()[i];
     		Key k = new Key(temp);
     		
-    		if(getZone(j.getX() + 1, j.getY()).z == temp)
-        	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
+    		if(getZone(j.getX() + 1, j.getY()).z == temp && j.getKeyElement(k.e)) {
+        	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal; 
+        	    nbArtefacts+=1;
+    		}
     		
-	    	else if(getZone(j.getX() - 1, j.getY()).z == temp)
+	    	else if(getZone(j.getX() - 1, j.getY()).z == temp && j.getKeyElement(k.e)) {
 	    		getZone(j.getX() - 1, j.getY()).z = typeZone.normal;
+	    		nbArtefacts+=1;
+	    	}
 	    	
-	    	else if(getZone(j.getX(), j.getY() + 1).z == temp)
+	    	else if(getZone(j.getX(), j.getY() + 1).z == temp && j.getKeyElement(k.e)) {
 	    		getZone(j.getX(), j.getY() + 1).z = typeZone.normal;
+	    		nbArtefacts+=1;
+	    	}
 	    	
-	    	else if(getZone(j.getX(), j.getY() - 1).z == temp)
+	    	else if(getZone(j.getX(), j.getY() - 1).z == temp && j.getKeyElement(k.e)) {
 	    		getZone(j.getX(), j.getY() - 1).z = typeZone.normal;
+	    		nbArtefacts+=1;
+	    	}
     	}
     	
     	nbActions+=1;
-    	nbArtefacts+=1;
     	System.out.println("le nb d'artefacts est : " + nbArtefacts);
 		notifyObservers();
     }

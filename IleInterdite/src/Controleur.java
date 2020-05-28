@@ -56,6 +56,7 @@ class Controleur implements ActionListener {
     	    commandes.boutonHaut.setEnabled(false);
     	    commandes.boutonBas.setEnabled(false);
     	    commandes.boutonAsseche.setEnabled(false);
+    	    commandes.boutonArtefact.setEnabled(false);
     	    commandes.boutonAvance.setEnabled(true);
     		}
     	
@@ -67,6 +68,7 @@ class Controleur implements ActionListener {
     	    commandes.boutonBas.setEnabled(true);
     	    commandes.boutonAsseche.setEnabled(true);
     	    commandes.boutonAvance.setEnabled(true);
+    	    commandes.boutonArtefact.setEnabled(true);
     	}
     	
     	//Les tours alternent, 3 joueurs donc modulo 3
