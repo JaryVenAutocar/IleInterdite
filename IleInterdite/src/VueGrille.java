@@ -77,11 +77,17 @@ class VueGrille extends JPanel implements Observer {
     private void paint(Graphics g, Zone c, int x, int y) {
         /** Sélection d'une couleur. */
     	
-    	if(c.z == typeZone.normal) {
-    		Color sable = new Color(245, 224, 158);
-			g.setColor(sable);
+     	if(c.z == typeZone.innonde) {
+     		if(c.getX() == modele.j.getX() && c.getY() == modele.j.getY()) {
+    			g.setColor(Color.RED);
+        		g.fillRect(x,  y,  TAILLE, TAILLE);
+     		} else {
+			g.setColor(Color.BLUE);
 			g.fillRect(x,  y,  TAILLE, TAILLE);
-    	} else if(c.z == typeZone.joueur) {
+     		}
+		} 
+     	
+     	else if(c.estJoueur || c.z == typeZone.joueur) {
     		if(c.getX() == modele.j.getX() && c.getY() == modele.j.getY()) {
     			g.setColor(Color.RED);
         		g.fillRect(x,  y,  TAILLE, TAILLE);
@@ -89,32 +95,48 @@ class VueGrille extends JPanel implements Observer {
     			g.setColor(Color.GRAY);
         		g.fillRect(x,  y,  TAILLE, TAILLE);
     		}
-		} else if(c.z == typeZone.innonde) {
-			g.setColor(Color.BLUE);
-			g.fillRect(x,  y,  TAILLE, TAILLE);
-		} else if(c.z == typeZone.heliport) {
-			g.setColor(Color.PINK);
-			g.fillRect(x,  y, TAILLE, TAILLE);
-		} else if(c.z == typeZone.terre) {
+     	}
+     	
+     	else if(c.z == typeZone.terre) {
 			Color terre = new Color(148,87,8);
 			g.setColor(terre);
 			g.fillRect(x,  y, TAILLE, TAILLE);
-		}else if(c.z == typeZone.eau) {
+		}
+     	
+     	else if(c.z == typeZone.eau) {
 			Color eau = new Color(38,127,154);
 			g.setColor(eau);
 			g.fillRect(x,  y, TAILLE, TAILLE);
-		}else if(c.z == typeZone.feu) {
+		}
+     	
+     	else if(c.z == typeZone.feu) {
 			Color feu = new Color(255,173,28);
 			g.setColor(feu);
 			g.fillRect(x,  y, TAILLE, TAILLE);
-		} else if(c.z == typeZone.air) {
+		} 
+     	
+     	else if(c.z == typeZone.air) {
 			Color air = new Color(181,236,245);
 			g.setColor(air);
 			g.fillRect(x,  y, TAILLE, TAILLE);
-		} else {
+		}
+     	
+     	else if(c.z == typeZone.normal) {
+        	Color sable = new Color(245, 224, 158);
+    		g.setColor(sable);
+    		g.fillRect(x,  y,  TAILLE, TAILLE);
+		}
+     	
+     	else if(c.z == typeZone.heliport) {
+			g.setColor(Color.PINK);
+			g.fillRect(x,  y, TAILLE, TAILLE);
+		} 
+     	
+     	else {
 			g.setColor(Color.BLACK);
 			g.fillRect(x,  y,  TAILLE, TAILLE);
 		}
+     	
     }
 
 }

@@ -71,16 +71,6 @@ class Controleur implements ActionListener {
     	    commandes.boutonArtefact.setEnabled(true);
     	}
     	
-    	if(modele.partieGagnee) {
-    		commandes.boutonGauche.setVisible(false);
-    	    commandes.boutonDroite.setVisible(false);
-    	    commandes.boutonHaut.setVisible(false);
-    	    commandes.boutonBas.setVisible(false);
-    	    commandes.boutonAsseche.setVisible(false);
-    	    commandes.boutonAvance.setVisible(false);
-    	    commandes.boutonArtefact.setVisible(false);
-    	}
-    	
     	
     	//Les tours alternent, 3 joueurs donc modulo 3
     	if( (modele.tour)%3 == 0) modele.j = modele.j1;

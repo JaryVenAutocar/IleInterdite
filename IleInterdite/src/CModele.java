@@ -25,13 +25,26 @@ class CModele extends Observable {
     public Joueur j2 = new Joueur(COTE, (COTE+1)/2);
     public Joueur j3 = new Joueur(1, (COTE+1)/2);
     public Zone heliport = new Zone(this, false, (COTE+1)/2, COTE, typeZone.heliport);
-    private Zone air = new Zone(this, false,1+new Random().nextInt(((COTE+1)/2)-1), 1+new Random().nextInt(((COTE+1)/2)-1) , typeZone.air);
-    private Zone terre = new Zone(this, false,((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2), 1+new Random().nextInt(((COTE+1)/2)-2) , typeZone.terre);
-    private Zone eau = new Zone(this, false,1+new Random().nextInt(((COTE+1)/2)-1) , ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , typeZone.eau);
-    private Zone feu = new Zone(this, false,((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2) , typeZone.feu);
+    
+    private int xair = 1+new Random().nextInt(((COTE+1)/2)-1);
+    private int yair = 1+new Random().nextInt(((COTE+1)/2)-1);
+    
+    private int xterre = ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2);
+    private int yterre = 1+new Random().nextInt(((COTE+1)/2)-2);
+    
+    private int xeau = 1+new Random().nextInt(((COTE+1)/2)-1);
+    private int yeau = ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2);
+    
+    private int xfeu = ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2);
+    private int yfeu = ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2);
+    
+    private Zone air = new Zone(this, false, xair, yair , typeZone.air);
+    private Zone terre = new Zone(this, false, xterre, yterre , typeZone.terre);
+    private Zone eau = new Zone(this, false, xeau, yeau , typeZone.eau);
+    private Zone feu = new Zone(this, false, xfeu, yfeu, typeZone.feu);
     //Permet d'alterner les 3 joueurs, initialisé à J1 pour dire que le J1 commence le jeu (celui en haut)
     public Joueur j = j1;
-    public Key k;
+    public typeZone ancienneZone, prochaineZone;
 
     
     
@@ -48,14 +61,14 @@ class CModele extends Observable {
 	    	Zones[i][j] = new Zone(this, false, i, j, typeZone.normal);
 	    	}
 		}
-		Zones[j1.getX()][j1.getY()] = new Zone(this, true, j1.getX(), j1.getY(), typeZone.joueur);
-		Zones[j2.getX()][j2.getY()] = new Zone(this, true, j2.getX(), j2.getY(), typeZone.joueur);
-		Zones[j3.getX()][j3.getY()] = new Zone(this, true, j3.getX(), j3.getY(), typeZone.joueur);
+		Zones[j1.getX()][j1.getY()] = new Zone(this, true, j1.getX(), j1.getY(), typeZone.normal);
+		Zones[j2.getX()][j2.getY()] = new Zone(this, true, j2.getX(), j2.getY(), typeZone.normal);
+		Zones[j3.getX()][j3.getY()] = new Zone(this, true, j3.getX(), j3.getY(), typeZone.normal);
 		Zones[(COTE+1)/2][COTE] = heliport;
-		Zones[1+new Random().nextInt(((COTE+1)/2)-1)][1+new Random().nextInt(((COTE+1)/2)-1)] = air;
-		Zones[((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)][1+new Random().nextInt(((COTE+1)/2)-2)] = terre;
-		Zones[1+new Random().nextInt(((COTE+1)/2)-1)][((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)] = eau;
-		Zones[((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)][((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2)] = feu;
+		Zones[xair][yair] = air;
+		Zones[xterre][yterre] = terre;
+		Zones[xeau][yeau] = eau;
+		Zones[xfeu][yfeu] = feu;
     }
 
     
@@ -92,7 +105,7 @@ class CModele extends Observable {
         	if(Zones[a][b].z == typeZone.submerge) k+= 0;
         	else {
         		if(Zones[a][b].z == typeZone.normal) Zones[a][b].z = typeZone.innonde;		
-        		else if(Zones[a][b].z == typeZone.joueur) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].estJoueur) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.air) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.eau) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.feu) Zones[a][b].z = typeZone.innonde;
@@ -149,65 +162,89 @@ class CModele extends Observable {
     	//L'ancienne case qui était celle d'un joueur ne l'est plus mtn et devient normale
     	//(à changer avec ancien état : si ancienne case était innondée, mettre innondé)
     	
-    	Zones[x][y] = new Zone(this, false, x, y, typeZone.normal);
+    	Zones[x][y] = new Zone(this, false, x, y, ancienneZone);
 
     	if(x == 1) x+=1;
     	
     	//La nouvelle case où se trouve le joueur devient une case joueur
-    	Zones[x-1][y] = new Zone(this, true, x-1, y, typeZone.joueur);
+    	Zones[x-1][y] = new Zone(this, true, x-1, y, prochaineZone);
     	j.setX(x-1);
 	}
     
     public void gauche() {
-    	MoveGauche(j.getX(), j.getY());
+    	ancienneZone = Zones[j.getX()][j.getY()].z;
+    	prochaineZone = Zones[j.getX() - 1][j.getY()].z;
+    	
+    	if(Zones[j.getX() - 1][j.getY()].z == typeZone.submerge) 
+    		System.out.println("la zone est submergée et est donc bloquée");
+    	else
+    		MoveGauche(j.getX(), j.getY());
     	nbActions+=1;
     	notifyObservers();
     }
     
     
     public void MoveDroite(int x, int y) {
-    	Zones[x][y] = new Zone(this, false, x, y, typeZone.normal);
+    	Zones[x][y] = new Zone(this, false, x, y, ancienneZone);
     	
     	if(x == COTE) x-=1;
     	
-    	Zones[x+1][y] = new Zone(this, true, x+1, y, typeZone.joueur);
+    	Zones[x+1][y] = new Zone(this, true, x+1, y, prochaineZone);
     	j.setX(x+1);
 	}
     
     public void droite() {
-    	MoveDroite(j.getX(), j.getY());
+    	ancienneZone = Zones[j.getX()][j.getY()].z;
+    	prochaineZone = Zones[j.getX() + 1][j.getY()].z;
+    	
+    	if(Zones[j.getX() + 1][j.getY()].z == typeZone.submerge) 
+    		System.out.println("la zone est submergée et est donc bloquée");
+    	else
+    		MoveDroite(j.getX(), j.getY());
     	nbActions+=1;
     	notifyObservers();
     }
     
     
     public void MoveBas(int x, int y) {
-    	Zones[x][y] = new Zone(this, false, x, y, typeZone.normal);
+    	Zones[x][y] = new Zone(this, false, x, y, ancienneZone);
     	
     	if(y == COTE) y-=1;
     	
-    	Zones[x][y+1] = new Zone(this, true, x, y+1, typeZone.joueur);
+    	Zones[x][y+1] = new Zone(this, true, x, y+1, prochaineZone);
     	j.setY(y+1);
 	}
     
     public void bas() {
-    	MoveBas(j.getX(), j.getY());
+    	ancienneZone = Zones[j.getX()][j.getY()].z;
+    	prochaineZone = Zones[j.getX()][j.getY() + 1].z;
+    	
+    	if(Zones[j.getX()][j.getY()+1].z == typeZone.submerge) 
+    		System.out.println("la zone est submergée et est donc bloquée");
+    	else
+    		MoveBas(j.getX(), j.getY());
     	nbActions+=1;
     	notifyObservers();
     }
     
     
     public void MoveHaut(int x, int y) {
-    	Zones[x][y] = new Zone(this, false, x, y, typeZone.normal);
+    	Zones[x][y] = new Zone(this, false, x, y, ancienneZone);
     	
     	if(y == 1) y+=1;
     	
-    	Zones[x][y-1] = new Zone(this, true, x, y-1, typeZone.joueur);
+    	Zones[x][y-1] = new Zone(this, true, x, y-1, prochaineZone);
     	j.setY(y-1);
 	}
     
     public void haut() {
-    	MoveHaut(j.getX(), j.getY());
+    	ancienneZone = Zones[j.getX()][j.getY()].z;
+    	prochaineZone = Zones[j.getX()][j.getY() - 1].z;
+    	
+    	if(Zones[j.getX()][j.getY()-1].z == typeZone.submerge) 
+    		System.out.println("la zone est submergée et est donc bloquée");
+    	else
+    		MoveHaut(j.getX(), j.getY());
     	nbActions+=1;
     	notifyObservers();
     }
@@ -216,52 +253,82 @@ class CModele extends Observable {
     
     public int compteZoneInnonde(int x, int y) {
     	int res = 0;
-    	if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) res +=1;
-    	if(getZone(j.getX() - 1, j.getY()).z == typeZone.innonde) res +=1;
-    	if(getZone(j.getX(), j.getY() + 1).z == typeZone.innonde) res +=1;
-    	if(getZone(j.getX(), j.getY() - 1).z == typeZone.innonde) res +=1;
+    	if(getZone(x + 1, j.getY()).z == typeZone.innonde) res +=1;
+    	if(getZone(x - 1, j.getY()).z == typeZone.innonde) res +=1;
+    	if(getZone(x, y + 1).z == typeZone.innonde) res +=1;
+    	if(getZone(x, y - 1).z == typeZone.innonde) res +=1;
     	return res;
     }
     
     
     public void asseche() {
-
-    	//Si le joueur devient innondé, il peut s'assécher et redevenir une case joueur
-    		if(getZone(j.getX(), j.getY()).z == typeZone.innonde)
-    			getZone(j.getX(), j.getY()).z = typeZone.joueur;
-    		
-    		
-    		// Permet d'assecher les zones spéciales meme en etant a distance (sans etre adjacent)
-    		// Il faut modifier pour ne pouvoir le faire qu'en etant a cote
-    		/** if(air.z == typeZone.innonde)
-    			air.z = typeZone.air;
-    		
-    		else if(feu.z == typeZone.innonde)
-    			feu.z = typeZone.feu;
-    		
-    		else if(terre.z == typeZone.innonde)
-    			terre.z = typeZone.terre;
-    		
-    		else if(eau.z == typeZone.innonde)
-    			eau.z = typeZone.eau; **/
     	
-    		else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) 
-        	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
+    	Zone[] ensZones = {air, eau, terre, feu};
+    	typeZone[] ensTypeZone = {air.z, eau.z, terre.z, feu.z};
+    	
+    	typeZone tempAir = typeZone.air; typeZone tempFeu = typeZone.feu;
+    	typeZone tempEau = typeZone.eau; typeZone tempTerre = typeZone.terre;
+    	
+    	int voisinsInnondesAvantBoucle = compteZoneInnonde(j.getX(), j.getY());
+    	
+    	for(int i = 0; i < ensZones.length; i++) {
     		
-	    	else if(getZone(j.getX() - 1, j.getY()).z == typeZone.innonde)
-	    		getZone(j.getX() - 1, j.getY()).z = typeZone.normal;
-	    	
-	    	else if(getZone(j.getX(), j.getY() + 1).z == typeZone.innonde)
-	    		getZone(j.getX(), j.getY() + 1).z = typeZone.normal;
-	    	
-	    	else if(getZone(j.getX(), j.getY() - 1).z == typeZone.innonde)
-	    		getZone(j.getX(), j.getY() - 1).z = typeZone.normal;
+    		if(i == 0) ensTypeZone[i] = tempAir;
+    		else if(i == 1) ensTypeZone[i] = tempEau;
+    		else if(i == 2) ensTypeZone[i] = tempTerre;
+    		else if(i == 3) ensTypeZone[i] = tempFeu;
     		
+    		if(getZone(j.getX(), j.getY()).z == typeZone.innonde) {
+    			if(j.getX() == ensZones[i].getX() && j.getY() == ensZones[i].getY())
+    				getZone(j.getX(), j.getY()).z = ensTypeZone[i]; 
+    		}
+    			
+    		else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) {
+    			if((j.getX() + 1) == ensZones[i].getX() && j.getY() == ensZones[i].getY())
+    				getZone(j.getX() + 1, j.getY()).z = ensTypeZone[i];
+    		}    	    
+    		
+	    	else if(getZone(j.getX() - 1, j.getY()).z == typeZone.innonde) {
+	    		if((j.getX() - 1) == ensZones[i].getX() && j.getY() == ensZones[i].getY())
+	    			getZone(j.getX() - 1, j.getY()).z = ensTypeZone[i];
+	    	}	    		
+	    	
+	    	else if(getZone(j.getX(), j.getY() + 1).z == typeZone.innonde) {
+	    		if(j.getX() == ensZones[i].getX() && (j.getY() + 1) == ensZones[i].getY())
+	    			getZone(j.getX(), j.getY() + 1).z = ensTypeZone[i];
+	    	}	    		
+	    	
+	    	else if(getZone(j.getX(), j.getY() - 1).z == typeZone.innonde) {
+	    		if(j.getX() == ensZones[i].getX() && (j.getY() - 1) == ensZones[i].getY())
+	    			getZone(j.getX(), j.getY() - 1).z = ensTypeZone[i];
+	    	}	
+    	}
+    	
+    	int voisinsInnondesApresBoucle = compteZoneInnonde(j.getX(), j.getY());
+    	
+    	
+    	if(voisinsInnondesAvantBoucle == voisinsInnondesApresBoucle) {
+	    	if(getZone(j.getX(), j.getY()).z == typeZone.innonde)
+				getZone(j.getX(), j.getY()).z = typeZone.normal;
+	    	
+	    	else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) 
+	        	getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
+	    	
+	        else if(getZone(j.getX() - 1, j.getY()).z == typeZone.innonde)
+	        	getZone(j.getX() - 1, j.getY()).z = typeZone.normal;
+	    	
+	        else if(getZone(j.getX(), j.getY() + 1).z == typeZone.innonde)
+	        	getZone(j.getX(), j.getY() + 1).z = typeZone.normal;
+	    	
+	        else if(getZone(j.getX(), j.getY() - 1).z == typeZone.innonde)
+	        	getZone(j.getX(), j.getY() - 1).z = typeZone.normal;
+    	}
+    	
     	nbActions+=1;
     	notifyObservers();
     }
-    
-    
+
+
     
     public void recupArtefact() {
     	
