@@ -101,21 +101,48 @@ class Controleur implements ActionListener {
     	
     	Zone[] zoneSpeciale = {modele.heliport, modele.air, modele.eau, modele.feu, modele.terre};
     	typeZone[] typeZoneSpeciale = {typeZone.heliport, typeZone.air, typeZone.eau, typeZone.feu, typeZone.terre};
+    	
     	for(int i = 0; i < zoneSpeciale.length; i++) {
     		
-    		if(zoneSpeciale[i].z == typeZone.innonde && bouton == commandes.boutonAvance)
-    			System.out.println("Cette zone speciale est innondee faites attention : " + typeZoneSpeciale[i]);
-
-    		if(zoneSpeciale[i].z == typeZone.submerge && bouton == commandes.boutonAvance)
-    			System.out.println("Cette zone speciale est submergee c'est perdu : " + typeZoneSpeciale[i]);
-    		
-    		if(zoneSpeciale[i].z == typeZone.submerge) {
-				modele.partiePerdue = true;
+    		if(modele.partiePerdue == false) {
+	    		if(zoneSpeciale[i].z == typeZone.innonde && bouton == commandes.boutonAvance)
+	    			System.out.println("Cette zone speciale est innondee faites attention : " + typeZoneSpeciale[i]);
+	
+	    		if(zoneSpeciale[i].z == typeZone.submerge && bouton == commandes.boutonAvance)
+	    			System.out.println("Cette zone speciale est submergee c'est perdu : " + typeZoneSpeciale[i]);
+	    		
+	    		//if(zoneSpeciale[i].z == typeZone.submerge)
+					//modele.partiePerdue = true;
     		}
     	}
     	
     	
+    	//Si le joueur est sur le contour visible des bordures du jeu	
+    	if(modele.j.getX() == 1 || modele.j.getX() == modele.COTE || modele.j.getY() == 1 || modele.j.getY() == modele.COTE) {
+    		
+    		//Si le joueur est sur un des 4 recoins du jeu
+    		if(modele.j.getX() == modele.j.getY() || (modele.j.getX() == 1 && modele.j.getY() == modele.COTE) || (modele.j.getX() == modele.COTE && modele.j.getY() == 1)) {
+    			if(modele.compteZoneSubmerge(modele.j.getX(), modele.j.getY()) == 2) {
+    				System.out.println("Le joueur " + ((modele.tour)%3 + 1) + " s'est noye");
+    				modele.partiePerdue = true;
+    			}
+    		}
+    		
+    		if(modele.compteZoneSubmerge(modele.j.getX(), modele.j.getY()) == 3) {
+    			System.out.println("Le joueur " + ((modele.tour)%3 + 1) + " s'est noye");
+    			modele.partiePerdue = true;
+    		}
+    	}	
     	
+    	
+    	//Si le joueur est n'importe ou sauf sur les bordures
+    	else if(modele.compteZoneSubmerge(modele.j.getX(), modele.j.getY()) == 4) {
+    		System.out.println("Le joueur " + ((modele.tour)%3 + 1) + " s'est noye");
+    		modele.partiePerdue = true;
+    	}
+    
+    	//Si tous les artefacts sont en la possession des joueurs
+    	//Et si tous les joueurs sont sur la zone de l'heliport
     	if(modele.nbArtefacts == 4) {
     		if((modele.j1.getX() == modele.j2.getX()) && (modele.j2.getX() == modele.j3.getX()) && (modele.j3.getX() == modele.heliport.getX())) {
     			if((modele.j1.getY() == modele.j2.getY()) && (modele.j2.getY() == modele.j3.getY()) && (modele.j3.getY() == modele.heliport.getY()))

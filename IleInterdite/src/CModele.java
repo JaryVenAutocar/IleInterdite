@@ -149,7 +149,7 @@ class CModele extends Observable {
     	}
     
     public void addKey(Joueur j) {
-    	if(Math.random() <= 0.5) {
+    	if(Math.random() <= 0.5 && partiePerdue == false) {
     		Key k = new Key(getRandomElement());
     		j.addKey(k);
     		/**for(int i = 0; i < j.keyList.size(); i++)
@@ -259,6 +259,15 @@ class CModele extends Observable {
     	if(getZone(x - 1, j.getY()).z == typeZone.innonde) res +=1;
     	if(getZone(x, y + 1).z == typeZone.innonde) res +=1;
     	if(getZone(x, y - 1).z == typeZone.innonde) res +=1;
+    	return res;
+    }
+    
+    public int compteZoneSubmerge(int x, int y) {
+    	int res = 0;
+    	if(getZone(x + 1, j.getY()).z == typeZone.submerge) res +=1;
+    	if(getZone(x - 1, j.getY()).z == typeZone.submerge) res +=1;
+    	if(getZone(x, y + 1).z == typeZone.submerge) res +=1;
+    	if(getZone(x, y - 1).z == typeZone.submerge) res +=1;
     	return res;
     }
     
