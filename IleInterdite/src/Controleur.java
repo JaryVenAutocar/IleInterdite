@@ -71,19 +71,55 @@ class Controleur implements ActionListener {
     	    commandes.boutonArtefact.setEnabled(true);
     	}
     	
+    	if(modele.partieGagnee) {
+			System.out.println("Vous avez gagne la partie");
+    		commandes.boutonGauche.setVisible(false);
+    	    commandes.boutonDroite.setVisible(false);
+    	    commandes.boutonHaut.setVisible(false);
+    	    commandes.boutonBas.setVisible(false);
+    	    commandes.boutonAsseche.setVisible(false);
+    	    commandes.boutonAvance.setVisible(false);
+    	    commandes.boutonArtefact.setVisible(false);
+    	}
+    	
+    	if(modele.partiePerdue) {
+    		System.out.println("Vous avez perdu la partie");
+    		commandes.boutonGauche.setVisible(false);
+    	    commandes.boutonDroite.setVisible(false);
+    	    commandes.boutonHaut.setVisible(false);
+    	    commandes.boutonBas.setVisible(false);
+    	    commandes.boutonAsseche.setVisible(false);
+    	    commandes.boutonAvance.setVisible(false);
+    	    commandes.boutonArtefact.setVisible(false);
+    	}
+    	
     	
     	//Les tours alternent, 3 joueurs donc modulo 3
     	if( (modele.tour)%3 == 0) modele.j = modele.j1;
     	else if( (modele.tour)%3 == 1) modele.j = modele.j2;
     	else modele.j = modele.j3;
     	
+    	Zone[] zoneSpeciale = {modele.heliport, modele.air, modele.eau, modele.feu, modele.terre};
+    	typeZone[] typeZoneSpeciale = {typeZone.heliport, typeZone.air, typeZone.eau, typeZone.feu, typeZone.terre};
+    	for(int i = 0; i < zoneSpeciale.length; i++) {
+    		
+    		if(zoneSpeciale[i].z == typeZone.innonde && bouton == commandes.boutonAvance)
+    			System.out.println("Cette zone speciale est innondee faites attention : " + typeZoneSpeciale[i]);
+
+    		if(zoneSpeciale[i].z == typeZone.submerge && bouton == commandes.boutonAvance)
+    			System.out.println("Cette zone speciale est submergee c'est perdu : " + typeZoneSpeciale[i]);
+    		
+    		if(zoneSpeciale[i].z == typeZone.submerge) {
+				modele.partiePerdue = true;
+    		}
+    	}
+    	
+    	
     	
     	if(modele.nbArtefacts == 4) {
     		if((modele.j1.getX() == modele.j2.getX()) && (modele.j2.getX() == modele.j3.getX()) && (modele.j3.getX() == modele.heliport.getX())) {
-    			if((modele.j1.getY() == modele.j2.getY()) && (modele.j2.getY() == modele.j3.getY()) && (modele.j3.getY() == modele.heliport.getY())) {
-    				System.out.println("Vous avez gagne");
+    			if((modele.j1.getY() == modele.j2.getY()) && (modele.j2.getY() == modele.j3.getY()) && (modele.j3.getY() == modele.heliport.getY()))
     				modele.partieGagnee = true;
-    			}
     		}
     	}
     	

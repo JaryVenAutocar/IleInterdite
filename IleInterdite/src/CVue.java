@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import javax.swing.*;
 
@@ -73,7 +72,7 @@ class CVue{
 	 */
 	frame.pack();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	frame.setSize(600, 400);
+	frame.setSize(590, 400);
 	frame.setVisible(true);
     }
 }

@@ -18,6 +18,7 @@ class CModele extends Observable {
 	public int nbArtefacts = 0;
 	public int tour = 0;
 	public boolean partieGagnee = false;
+	public boolean partiePerdue = false;
 	static final int COTE = 21;
     /** On stocke un tableau de Zones. */
     private Zone[][] Zones;
@@ -38,10 +39,10 @@ class CModele extends Observable {
     private int xfeu = ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2);
     private int yfeu = ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2);
     
-    private Zone air = new Zone(this, false, xair, yair , typeZone.air);
-    private Zone terre = new Zone(this, false, xterre, yterre , typeZone.terre);
-    private Zone eau = new Zone(this, false, xeau, yeau , typeZone.eau);
-    private Zone feu = new Zone(this, false, xfeu, yfeu, typeZone.feu);
+    public Zone air = new Zone(this, false, xair, yair , typeZone.air);
+    public Zone terre = new Zone(this, false, xterre, yterre , typeZone.terre);
+    public Zone eau = new Zone(this, false, xeau, yeau , typeZone.eau);
+    public Zone feu = new Zone(this, false, xfeu, yfeu, typeZone.feu);
     //Permet d'alterner les 3 joueurs, initialisé à J1 pour dire que le J1 commence le jeu (celui en haut)
     public Joueur j = j1;
     public typeZone ancienneZone, prochaineZone;
@@ -110,6 +111,7 @@ class CModele extends Observable {
         		else if(Zones[a][b].z == typeZone.eau) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.feu) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.terre) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].z == typeZone.heliport) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.innonde) Zones[a][b].z = typeZone.submerge;
             	else Zones[a][b].z = typeZone.submerge;
         		k++;
@@ -147,7 +149,7 @@ class CModele extends Observable {
     	}
     
     public void addKey(Joueur j) {
-    	if(Math.random() <= 0.35) {
+    	if(Math.random() <= 0.5) {
     		Key k = new Key(getRandomElement());
     		j.addKey(k);
     		/**for(int i = 0; i < j.keyList.size(); i++)
@@ -303,10 +305,8 @@ class CModele extends Observable {
 	    			getZone(j.getX(), j.getY() - 1).z = ensTypeZone[i];
 	    	}	
     	}
-    	
     	int voisinsInnondesApresBoucle = compteZoneInnonde(j.getX(), j.getY());
-    	
-    	
+  	
     	if(voisinsInnondesAvantBoucle == voisinsInnondesApresBoucle) {
 	    	if(getZone(j.getX(), j.getY()).z == typeZone.innonde)
 				getZone(j.getX(), j.getY()).z = typeZone.normal;
@@ -327,9 +327,7 @@ class CModele extends Observable {
     	nbActions+=1;
     	notifyObservers();
     }
-
-
-    
+  
     public void recupArtefact() {
     	
     	for(int i = 0; i < typeZone.values().length; i++) {
