@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import javax.swing.*;
 
@@ -26,8 +27,8 @@ class CVue{
     public CVue(CModele modele) {
 	/** Définition de la fenêtre principale. */
 	frame = new JFrame();
-	JLabel tourJoueur = new JLabel("<html><h1>C'est le tour du joueur en rouge</h1><html>", JLabel.CENTER);
-	JLabel actions = new JLabel("              Il reste " + (3 - modele.nbActions) + " actions", JLabel.LEFT);
+	JLabel tourJoueur = new JLabel("C'est le tour du joueur "+ (modele.tour%3+1) +" (en rouge), ", JLabel.CENTER);
+	JLabel actions = new JLabel("il lui reste " + (3 - modele.nbActions) + " actions", JLabel.LEFT);
 	frame.add(tourJoueur);
 	frame.add(actions);
 	frame.setTitle("Ile Interdite");
@@ -50,7 +51,7 @@ class CVue{
 	frame.setLayout(new FlowLayout());
 
 	/** Définition des deux vues et ajout à la fenêtre. */
-	grille = new VueGrille(modele, actions);
+	grille = new VueGrille(modele, actions, tourJoueur);
 	frame.add(grille);
 	commandes = new VueCommandes(modele);
 	frame.add(commandes);

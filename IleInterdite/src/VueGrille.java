@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import javax.swing.*;
 
@@ -16,12 +17,14 @@ class VueGrille extends JPanel implements Observer {
     /** Définition d'une taille (en pixels) pour l'affichage des Zones. */
     private final static int TAILLE = 12;
     private JLabel j;
+    private JLabel j2;
 
     /** Constructeur. */
-    public VueGrille(CModele modele, JLabel j) {
+    public VueGrille(CModele modele, JLabel j, JLabel j2) {
     	
 		this.modele = modele;
 		this.j = j;
+		this.j2 = j2;
 		/** On enregistre la vue [this] en tant qu'observateur de [modele]. */
 		modele.addObserver(this);
 		/**
@@ -42,7 +45,8 @@ class VueGrille extends JPanel implements Observer {
      */
     public void update() { 
     	repaint();
-    	j.setText("              Il reste " + (3 - modele.nbActions) + " actions");
+    	j.setText("il lui reste " + (3 - modele.nbActions) + " actions");
+    	j2.setText("C'est le tour du joueur "+ (modele.tour%3+1) +" (en rouge),");
     	}
 
     /**
