@@ -72,7 +72,7 @@ class CVue{
 	 */
 	frame.pack();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	frame.setSize(700, 380);
+	frame.setSize(900, 450);
 	frame.setVisible(true);
     }
 }

@@ -45,7 +45,6 @@ class Zone {
 	}
 	
 	
-	
     /**
      * Le passage à la génération suivante se fait en deux étapes :
      *  - D'abord on calcule pour chaque Zone ce que sera son état à la

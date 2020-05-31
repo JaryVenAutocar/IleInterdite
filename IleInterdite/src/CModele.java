@@ -1,6 +1,6 @@
 import java.util.*;
 import java.lang.Math;
-
+import java.util.concurrent.ThreadLocalRandom;
 /**
  * Le modèle : le coeur de l'application.
  *
@@ -108,7 +108,7 @@ class CModele extends Observable {
         	if(Zones[a][b].z == typeZone.submerge) k+= 0;
         	else {
         		if(Zones[a][b].z == typeZone.normal) Zones[a][b].z = typeZone.innonde;		
-        		else if(Zones[a][b].estJoueur) Zones[a][b].z = typeZone.innonde;
+        		else if(Zones[a][b].estJoueur || Zones[a][b].z == typeZone.joueur) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.air) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.eau) Zones[a][b].z = typeZone.innonde;
         		else if(Zones[a][b].z == typeZone.feu) Zones[a][b].z = typeZone.innonde;
@@ -134,7 +134,6 @@ class CModele extends Observable {
 	 */ 
 		evalue();
 		addKey(j);
-		//compteTypeZone();
 		tour+=1;
 	/**
 	 * Pour finir, le modèle ayant changé, on signale aux observateurs
@@ -181,8 +180,11 @@ class CModele extends Observable {
     	
     	if(Zones[j.getX() - 1][j.getY()].z == typeZone.submerge) 
     		System.out.println("la zone est submergée et est donc bloquée");
-    	else
+    	else {
     		MoveGauche(j.getX(), j.getY());
+    		if(compteJoueurSurZone(j.getX() + 1, j.getY()) >= 1)
+    			Zones[j.getX() + 1][j.getY()].estJoueur = true;
+    	}
     	nbActions+=1;
     	notifyObservers();
     }
@@ -203,8 +205,11 @@ class CModele extends Observable {
     	
     	if(Zones[j.getX() + 1][j.getY()].z == typeZone.submerge) 
     		System.out.println("la zone est submergée et est donc bloquée");
-    	else
+    	else {
     		MoveDroite(j.getX(), j.getY());
+    		if(compteJoueurSurZone(j.getX() - 1, j.getY()) >= 1)
+    			Zones[j.getX() - 1][j.getY()].estJoueur = true;
+    	}
     	nbActions+=1;
     	notifyObservers();
     }
@@ -225,8 +230,11 @@ class CModele extends Observable {
     	
     	if(Zones[j.getX()][j.getY()+1].z == typeZone.submerge) 
     		System.out.println("la zone est submergée et est donc bloquée");
-    	else
+    	else {
     		MoveBas(j.getX(), j.getY());
+    		if(compteJoueurSurZone(j.getX(), j.getY() - 1) >= 1)
+    			Zones[j.getX()][j.getY() - 1].estJoueur = true;
+    	}
     	nbActions+=1;
     	notifyObservers();
     }
@@ -247,12 +255,14 @@ class CModele extends Observable {
     	
     	if(Zones[j.getX()][j.getY()-1].z == typeZone.submerge) 
     		System.out.println("la zone est submergée et est donc bloquée");
-    	else
+    	else {
     		MoveHaut(j.getX(), j.getY());
+    		if(compteJoueurSurZone(j.getX(), j.getY() + 1) >= 1)
+    			Zones[j.getX()][j.getY() + 1].estJoueur = true;
+    	}
     	nbActions+=1;
     	notifyObservers();
     }
-    
     
     
     public int compteZoneInnonde(int x, int y) {
@@ -338,30 +348,42 @@ class CModele extends Observable {
     	nbActions+=1;
     	notifyObservers();
     }
+    
+    
+    public int nbKeyOfArtefact(Joueur j, element e) {
+    	int res = 0;
+    	for(Key k : j.keyList)
+    		if(k.e == e) res+=1;
+    	return res;
+    }
+    
+    
   
     public void recupArtefact() {
     	
-    	for(int i = 0; i < typeZone.values().length; i++) {
+    	typeZone[] ensTypeZone = {typeZone.air, typeZone.eau, typeZone.terre, typeZone.feu};
+    	element[] ensElement = {element.air, element.eau, element.terre, element.feu};
+    	
+    	for(int i = 0; i < ensTypeZone.length; i++) {
     		
-    		typeZone temp = typeZone.values()[i];
-    		Key k = new Key(temp);
+    		Key k = new Key(ensTypeZone[i]);
     		
-    		if(getZone(j.getX() + 1, j.getY()).z == temp && j.getKeyElement(k.e)) {
+    		if(getZone(j.getX() + 1, j.getY()).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 4) {
         	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal; 
         	    nbArtefacts+=1;
     		}
     		
-	    	else if(getZone(j.getX() - 1, j.getY()).z == temp && j.getKeyElement(k.e)) {
+	    	else if(getZone(j.getX() - 1, j.getY()).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 4) {
 	    		getZone(j.getX() - 1, j.getY()).z = typeZone.normal;
 	    		nbArtefacts+=1;
 	    	}
 	    	
-	    	else if(getZone(j.getX(), j.getY() + 1).z == temp && j.getKeyElement(k.e)) {
+	    	else if(getZone(j.getX(), j.getY() + 1).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 4) {
 	    		getZone(j.getX(), j.getY() + 1).z = typeZone.normal;
 	    		nbArtefacts+=1;
 	    	}
 	    	
-	    	else if(getZone(j.getX(), j.getY() - 1).z == temp && j.getKeyElement(k.e)) {
+	    	else if(getZone(j.getX(), j.getY() - 1).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 4) {
 	    		getZone(j.getX(), j.getY() - 1).z = typeZone.normal;
 	    		nbArtefacts+=1;
 	    	}
@@ -373,13 +395,21 @@ class CModele extends Observable {
     }
     
     
+    public int compteJoueurSurZone(int x, int y) {
+    	int res = 0;
+    	if(j1.getX() == x && j1.getY() == y) res+=1;
+    	if(j2.getX() == x && j2.getY() == y) res+=1;
+    	if(j3.getX() == x && j3.getY() == y) res+=1;
+    	return res;
+    }
+    
     public void recupKey() {
     	
     	//Si joueur n'est pas sur une zone qui contient une cle
     	//Cette variable va permettre de trancher sur le fait de declencher la montee des eaux ou ne rien faire
     	double innondeOuNormal = Math.random();
     	
-    	if(Math.random() <= 0.80 && getZone(j.getX(), j.getY()).getKey) {
+    	if(Math.random() <= 0.90 && getZone(j.getX(), j.getY()).getKey) {
     		Key k = new Key(getRandomElement());
     		j.addKey(k);
     		getZone(j.getX(), j.getY()).getKey = false;
@@ -392,6 +422,43 @@ class CModele extends Observable {
     	else if(innondeOuNormal > 0.50)
     		System.out.println("Le joueur " + ((this.tour)%3 + 1) + " a cherche une cle et n'a rien trouve, il ne se passe rien.");
     	
+    	nbActions+=1;
+    	notifyObservers();
+    }
+    
+    
+    public void giveKey() {
+    	Random r = new Random();
+    	Joueur[] tabJoueurs = {j1, j2, j3, j1, j2};
+    	for(int i = 0; i < 3; i++) {
+    	
+	    	if((this.tour)%3 == i && compteJoueurSurZone(tabJoueurs[i].getX(), tabJoueurs[i].getY()) > 1) {
+		    		
+	    		if(!tabJoueurs[i].keyList.isEmpty()) {
+	    			
+	    			int randomInt = r.nextInt(j.keyList.size());
+	    			Key temp = tabJoueurs[i].keyList.get(randomInt);
+		    		if(getZone(tabJoueurs[i].getX(), tabJoueurs[i].getY()) == getZone(tabJoueurs[i+1].getX(), tabJoueurs[i+1].getY())) {
+		    			tabJoueurs[i].keyList.remove(randomInt);
+		    			tabJoueurs[i+1].keyList.add(temp);
+		    			if(i < 2)
+		    				System.out.println("Le joueur " + (i+2) + " a recu la cle " + temp.e + " du joueur " + (i+1));
+		    			else
+		    				System.out.println("Le joueur 1 a recu la cle " + temp.e + " du joueur 3");
+		    		}
+		    		else if(getZone(tabJoueurs[i].getX(), tabJoueurs[i].getY()) == getZone(tabJoueurs[i+2].getX(), tabJoueurs[i+2].getY())) {
+		    			tabJoueurs[i].keyList.remove(randomInt);
+		    			tabJoueurs[i+2].keyList.add(temp);
+		    			if(i == 0)
+		    				System.out.println("Le joueur 3 a recu la cle " + temp.e + " du joueur 1");
+		    			else if(i >= 1)
+		    				System.out.println("Le joueur " + i + " a recu la cle " + temp.e + " du joueur " + (i+1));
+		    		}
+	    		}
+	    		else
+	    			System.out.println("Le joueur " + (i+1) + " n'a pas de cle a donner");
+	    	}
+    	}
     	nbActions+=1;
     	notifyObservers();
     }

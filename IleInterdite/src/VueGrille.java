@@ -14,7 +14,7 @@ class VueGrille extends JPanel implements Observer {
     /** On maintient une référence vers le modèle. */
     private CModele modele;
     /** Définition d'une taille (en pixels) pour l'affichage des Zones. */
-    private final static int TAILLE = 12;
+    private final static int TAILLE = 15;
     private JLabel j;
     private JLabel j2;
 
@@ -46,7 +46,7 @@ class VueGrille extends JPanel implements Observer {
     	repaint();
     	if(modele.partiePerdue == false && modele.tour != 0) {
 	    	j.setText("il lui reste " + (3 - modele.nbActions) + " actions");
-	    	j2.setText("L'ile s'inonde de plus en plus ! C'est le tour du joueur "+ (modele.tour%3+1) +" (en rouge), ");
+	    	j2.setText("L'ile s'inonde de plus en plus autour de vous ! C'est le tour du joueur "+ (modele.tour%3+1) +" (en rouge), ");
     	}
     	else if(modele.partiePerdue == false && modele.tour == 0) {
 	    	j.setText("il lui reste " + (3 - modele.nbActions) + " actions");
@@ -117,7 +117,7 @@ class VueGrille extends JPanel implements Observer {
 		}
      	
      	else if(c.z == typeZone.eau) {
-			Color eau = new Color(38,127,154);
+			Color eau = new Color(166,221,230);
 			g.setColor(eau);
 			g.fillRect(x,  y, TAILLE, TAILLE);
 		}
@@ -129,7 +129,7 @@ class VueGrille extends JPanel implements Observer {
 		} 
      	
      	else if(c.z == typeZone.air) {
-			Color air = new Color(181,236,245);
+			Color air = new Color(255,255,255);
 			g.setColor(air);
 			g.fillRect(x,  y, TAILLE, TAILLE);
 		}

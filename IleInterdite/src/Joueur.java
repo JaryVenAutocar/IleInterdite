@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 
+enum role {ingenieur, navigateur, plongeur, messager} ;
+
 public class Joueur {
 
 	private int x; 
 	private int y;
+	public role r;
 	public ArrayList<Key> keyList;
 	public ArrayList<element> keyElementList;
 	

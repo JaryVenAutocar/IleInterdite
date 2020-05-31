@@ -32,6 +32,7 @@ class Controleur implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
     	
+    	
     	if(!modele.partiePerdue && bouton == commandes.boutonAvance) {
 	    	System.out.println("");
 	    	System.out.println("Nouveau tour !");
@@ -54,6 +55,8 @@ class Controleur implements ActionListener {
     		modele.recupArtefact();
     	else if(bouton == commandes.boutonRecupKey)
     		modele.recupKey();
+    	else if(bouton == commandes.boutonGiveKey)
+    		modele.giveKey();
     	else
     		modele.bas();
     	
@@ -66,7 +69,8 @@ class Controleur implements ActionListener {
     	    commandes.boutonAsseche.setEnabled(false);
     	    commandes.boutonArtefact.setEnabled(false);
     	    commandes.boutonRecupKey.setEnabled(false);
-    	    commandes.boutonAvance.setEnabled(true);
+    	    commandes.boutonGiveKey.setEnabled(false);
+    	    commandes.boutonAvance.setEnabled(true);	    
     		}
     	
     	//A chaque debut de tour, toutes les cases sont à nouveau disponibles
@@ -79,6 +83,7 @@ class Controleur implements ActionListener {
     	    commandes.boutonAvance.setEnabled(true);
     	    commandes.boutonArtefact.setEnabled(true);
     	    commandes.boutonRecupKey.setEnabled(true);
+    	    commandes.boutonGiveKey.setEnabled(true);
     	}
     	
     	if(modele.partieGagnee) {
@@ -91,6 +96,7 @@ class Controleur implements ActionListener {
     	    commandes.boutonAvance.setVisible(false);
     	    commandes.boutonArtefact.setVisible(false);
     	    commandes.boutonRecupKey.setVisible(false);
+    	    commandes.boutonGiveKey.setVisible(false);
     	}
     	
     	if(modele.partiePerdue) {
@@ -103,7 +109,9 @@ class Controleur implements ActionListener {
     	    commandes.boutonAvance.setVisible(false);
     	    commandes.boutonArtefact.setVisible(false);
     	    commandes.boutonRecupKey.setVisible(false);
+    	    commandes.boutonGiveKey.setVisible(false);
     	}
+    	
     	
     	
     	//Les tours alternent, 3 joueurs donc modulo 3

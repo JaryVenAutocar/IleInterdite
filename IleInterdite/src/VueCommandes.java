@@ -12,7 +12,7 @@ class VueCommandes extends JPanel {
      * référence au modèle.
      */
     private CModele modele;
-    public JButton boutonRecupKey, boutonArtefact, boutonAvance, boutonAsseche, boutonGauche, boutonDroite, boutonHaut, boutonBas;
+    public JButton boutonGiveKey, boutonRecupKey, boutonArtefact, boutonAvance, boutonAsseche, boutonGauche, boutonDroite, boutonHaut, boutonBas;
 
     /** Constructeur. */
     public VueCommandes(CModele modele) {
@@ -30,11 +30,13 @@ class VueCommandes extends JPanel {
     	boutonDroite = new JButton(">");
     	boutonArtefact = new JButton("Recuperer un artefact");
     	boutonRecupKey = new JButton("Recuperer une cle");
+    	boutonGiveKey = new JButton("Donner une cle");
     	
     	this.add(boutonAvance);
     	this.add(boutonAsseche);
     	this.add(boutonArtefact);
     	this.add(boutonRecupKey);
+    	this.add(boutonGiveKey);
     	this.add(boutonGauche);
     	this.add(boutonHaut);
     	this.add(boutonBas);
@@ -71,6 +73,8 @@ class VueCommandes extends JPanel {
     	Controleur Asseche = new Controleur(modele, this, boutonAsseche);
     	Controleur Artefact = new Controleur(modele, this, boutonArtefact);
     	Controleur RecupKey = new Controleur(modele, this, boutonRecupKey);
+    	Controleur GiveKey = new Controleur(modele, this, boutonGiveKey);
+    	
 	/** Enregistrement du contrôleur comme auditeur du bouton. */
     	boutonAvance.addActionListener(ctrl);
     	boutonDroite.addActionListener(Droit);
@@ -80,6 +84,7 @@ class VueCommandes extends JPanel {
     	boutonAsseche.addActionListener(Asseche);
     	boutonArtefact.addActionListener(Artefact);
     	boutonRecupKey.addActionListener(RecupKey);
+    	boutonGiveKey.addActionListener(GiveKey);
     	
 	
 	/**
