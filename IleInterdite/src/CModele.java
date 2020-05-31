@@ -149,7 +149,7 @@ class CModele extends Observable {
     	}
     
     public void addKey(Joueur j) {
-    	if(Math.random() <= 0.5 && partiePerdue == false) {
+    	if(Math.random() <= 0.35 && partiePerdue == false) {
     		Key k = new Key(getRandomElement());
     		j.addKey(k);
     		/**for(int i = 0; i < j.keyList.size(); i++)

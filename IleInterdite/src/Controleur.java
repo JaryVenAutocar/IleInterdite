@@ -32,6 +32,12 @@ class Controleur implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
     	
+    	if(!modele.partiePerdue) {
+	    	System.out.println("");
+	    	System.out.println("Nouveau tour !");
+	    	System.out.println("");
+    	}
+    	
     	if(bouton == commandes.boutonAvance) {
     		modele.nbActions = 0;
     		modele.avance();
@@ -111,8 +117,8 @@ class Controleur implements ActionListener {
 	    		if(zoneSpeciale[i].z == typeZone.submerge && bouton == commandes.boutonAvance)
 	    			System.out.println("Cette zone speciale est submergee c'est perdu : " + typeZoneSpeciale[i]);
 	    		
-	    		//if(zoneSpeciale[i].z == typeZone.submerge)
-					//modele.partiePerdue = true;
+	    		if(zoneSpeciale[i].z == typeZone.submerge)
+					modele.partiePerdue = true;
     		}
     	}
     	
