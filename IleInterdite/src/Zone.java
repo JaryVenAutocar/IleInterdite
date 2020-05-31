@@ -12,6 +12,7 @@ class Zone {
     private CModele modele;
     public boolean estJoueur;
     public boolean estInnonde;
+    public boolean getKey;
     //public etat e;
     public typeZone z;
     /**
@@ -35,9 +36,10 @@ class Zone {
         this.z = z;
     } **/
 	
-	public Zone(CModele modele, boolean estJoueur, int x, int y, typeZone z) {
+	public Zone(CModele modele, boolean estJoueur, boolean getKey, int x, int y, typeZone z) {
     this.modele = modele;
     this.estJoueur = estJoueur;
+    this.getKey = getKey;
     this.x = x; this.y = y;
     this.z = z;
 	}

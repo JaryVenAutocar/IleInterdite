@@ -44,8 +44,18 @@ class VueGrille extends JPanel implements Observer {
      */
     public void update() { 
     	repaint();
-    	j.setText("il lui reste " + (3 - modele.nbActions) + " actions");
-    	j2.setText("C'est le tour du joueur "+ (modele.tour%3+1) +" (en rouge),");
+    	if(modele.partiePerdue == false && modele.tour != 0) {
+	    	j.setText("il lui reste " + (3 - modele.nbActions) + " actions");
+	    	j2.setText("L'ile s'inonde de plus en plus ! C'est le tour du joueur "+ (modele.tour%3+1) +" (en rouge), ");
+    	}
+    	else if(modele.partiePerdue == false && modele.tour == 0) {
+	    	j.setText("il lui reste " + (3 - modele.nbActions) + " actions");
+	    	j2.setText("Bienvenue dans cette nouvelle partie ! Inaugurons les hostilites avec le joueur 1 (en rouge), ");
+    	}
+    	else {
+    		j.setText("Merci d'avoir joue ! :)");
+	    	j2.setText("Quel dommage, vous avez perdu ! Vous pouvez retenter votre chance une prochaine fois. ");
+    	}
     	}
 
     /**

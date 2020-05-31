@@ -26,7 +26,7 @@ class CVue{
     public CVue(CModele modele) {
 	/** Définition de la fenêtre principale. */
 	frame = new JFrame();
-	JLabel tourJoueur = new JLabel("C'est le tour du joueur "+ (modele.tour%3+1) +" (en rouge), ", JLabel.CENTER);
+	JLabel tourJoueur = new JLabel("Bienvenue dans cette nouvelle partie ! Inaugurons les hostilites avec le joueur 1 (en rouge), ", JLabel.CENTER);
 	JLabel actions = new JLabel("il lui reste " + (3 - modele.nbActions) + " actions", JLabel.LEFT);
 	frame.add(tourJoueur);
 	frame.add(actions);
@@ -72,7 +72,7 @@ class CVue{
 	 */
 	frame.pack();
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	frame.setSize(590, 400);
+	frame.setSize(700, 380);
 	frame.setVisible(true);
     }
 }

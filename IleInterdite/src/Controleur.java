@@ -32,7 +32,7 @@ class Controleur implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
     	
-    	if(!modele.partiePerdue) {
+    	if(!modele.partiePerdue && bouton == commandes.boutonAvance) {
 	    	System.out.println("");
 	    	System.out.println("Nouveau tour !");
 	    	System.out.println("");
@@ -52,6 +52,8 @@ class Controleur implements ActionListener {
     		modele.haut();
     	else if(bouton == commandes.boutonArtefact)
     		modele.recupArtefact();
+    	else if(bouton == commandes.boutonRecupKey)
+    		modele.recupKey();
     	else
     		modele.bas();
     	
@@ -63,6 +65,7 @@ class Controleur implements ActionListener {
     	    commandes.boutonBas.setEnabled(false);
     	    commandes.boutonAsseche.setEnabled(false);
     	    commandes.boutonArtefact.setEnabled(false);
+    	    commandes.boutonRecupKey.setEnabled(false);
     	    commandes.boutonAvance.setEnabled(true);
     		}
     	
@@ -75,6 +78,7 @@ class Controleur implements ActionListener {
     	    commandes.boutonAsseche.setEnabled(true);
     	    commandes.boutonAvance.setEnabled(true);
     	    commandes.boutonArtefact.setEnabled(true);
+    	    commandes.boutonRecupKey.setEnabled(true);
     	}
     	
     	if(modele.partieGagnee) {
@@ -86,6 +90,7 @@ class Controleur implements ActionListener {
     	    commandes.boutonAsseche.setVisible(false);
     	    commandes.boutonAvance.setVisible(false);
     	    commandes.boutonArtefact.setVisible(false);
+    	    commandes.boutonRecupKey.setVisible(false);
     	}
     	
     	if(modele.partiePerdue) {
@@ -97,6 +102,7 @@ class Controleur implements ActionListener {
     	    commandes.boutonAsseche.setVisible(false);
     	    commandes.boutonAvance.setVisible(false);
     	    commandes.boutonArtefact.setVisible(false);
+    	    commandes.boutonRecupKey.setVisible(false);
     	}
     	
     	

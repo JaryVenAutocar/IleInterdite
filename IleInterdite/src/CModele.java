@@ -19,13 +19,14 @@ class CModele extends Observable {
 	public int tour = 0;
 	public boolean partieGagnee = false;
 	public boolean partiePerdue = false;
+	Random getKey = new Random();
 	static final int COTE = 21;
     /** On stocke un tableau de Zones. */
     private Zone[][] Zones;
     public Joueur j1 = new Joueur((COTE+1)/2, 1);
     public Joueur j2 = new Joueur(COTE, (COTE+1)/2);
     public Joueur j3 = new Joueur(1, (COTE+1)/2);
-    public Zone heliport = new Zone(this, false, (COTE+1)/2, COTE, typeZone.heliport);
+    public Zone heliport = new Zone(this, false, false, (COTE+1)/2, COTE, typeZone.heliport);
     
     private int xair = 1+new Random().nextInt(((COTE+1)/2)-1);
     private int yair = 1+new Random().nextInt(((COTE+1)/2)-1);
@@ -39,10 +40,10 @@ class CModele extends Observable {
     private int xfeu = ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2);
     private int yfeu = ((COTE+1)/2)+1 + new Random().nextInt(((COTE+1)/2)-2);
     
-    public Zone air = new Zone(this, false, xair, yair , typeZone.air);
-    public Zone terre = new Zone(this, false, xterre, yterre , typeZone.terre);
-    public Zone eau = new Zone(this, false, xeau, yeau , typeZone.eau);
-    public Zone feu = new Zone(this, false, xfeu, yfeu, typeZone.feu);
+    public Zone air = new Zone(this, false, false, xair, yair , typeZone.air);
+    public Zone terre = new Zone(this, false, false, xterre, yterre , typeZone.terre);
+    public Zone eau = new Zone(this, false, false, xeau, yeau , typeZone.eau);
+    public Zone feu = new Zone(this, false, false, xfeu, yfeu, typeZone.feu);
     //Permet d'alterner les 3 joueurs, initialisé à J1 pour dire que le J1 commence le jeu (celui en haut)
     public Joueur j = j1;
     public typeZone ancienneZone, prochaineZone;
@@ -56,15 +57,16 @@ class CModele extends Observable {
 	 * Pour éviter les problèmes aux bords, on ajoute une ligne et une
 	 * colonne, dont les Zones n'évolueront pas.
 	 */ 
+    	
 		Zones = new Zone[COTE+2][COTE+2];
 		for(int i=0; i<COTE+2; i++) {
 			for(int j=0; j<COTE+2; j++) {
-	    	Zones[i][j] = new Zone(this, false, i, j, typeZone.normal);
+	    	Zones[i][j] = new Zone(this, false, getKey.nextBoolean(), i, j, typeZone.normal);
 	    	}
 		}
-		Zones[j1.getX()][j1.getY()] = new Zone(this, true, j1.getX(), j1.getY(), typeZone.normal);
-		Zones[j2.getX()][j2.getY()] = new Zone(this, true, j2.getX(), j2.getY(), typeZone.normal);
-		Zones[j3.getX()][j3.getY()] = new Zone(this, true, j3.getX(), j3.getY(), typeZone.normal);
+		Zones[j1.getX()][j1.getY()] = new Zone(this, true, getKey.nextBoolean(), j1.getX(), j1.getY(), typeZone.normal);
+		Zones[j2.getX()][j2.getY()] = new Zone(this, true, getKey.nextBoolean(), j2.getX(), j2.getY(), typeZone.normal);
+		Zones[j3.getX()][j3.getY()] = new Zone(this, true, getKey.nextBoolean(), j3.getX(), j3.getY(), typeZone.normal);
 		Zones[(COTE+1)/2][COTE] = heliport;
 		Zones[xair][yair] = air;
 		Zones[xterre][yterre] = terre;
@@ -144,7 +146,7 @@ class CModele extends Observable {
     public element getRandomElement() {
     	Random random = new Random();
     	    element randomElement = element.values()[random.nextInt(element.values().length)];
-    	    System.out.println("Le joueur " + ((this.tour)%3 + 1) + " recoit la cle " + randomElement);
+    	    System.out.println("Le joueur " + ((this.tour)%3 + 1) + " recoit la cle " + randomElement + " !");
     	    return randomElement;
     	}
     
@@ -164,12 +166,12 @@ class CModele extends Observable {
     	//L'ancienne case qui était celle d'un joueur ne l'est plus mtn et devient normale
     	//(à changer avec ancien état : si ancienne case était innondée, mettre innondé)
     	
-    	Zones[x][y] = new Zone(this, false, x, y, ancienneZone);
+    	Zones[x][y] = new Zone(this, false, getKey.nextBoolean(), x, y, ancienneZone);
 
     	if(x == 1) x+=1;
     	
     	//La nouvelle case où se trouve le joueur devient une case joueur
-    	Zones[x-1][y] = new Zone(this, true, x-1, y, prochaineZone);
+    	Zones[x-1][y] = new Zone(this, true, getKey.nextBoolean(), x-1, y, prochaineZone);
     	j.setX(x-1);
 	}
     
@@ -187,11 +189,11 @@ class CModele extends Observable {
     
     
     public void MoveDroite(int x, int y) {
-    	Zones[x][y] = new Zone(this, false, x, y, ancienneZone);
+    	Zones[x][y] = new Zone(this, false, getKey.nextBoolean(), x, y, ancienneZone);
     	
     	if(x == COTE) x-=1;
     	
-    	Zones[x+1][y] = new Zone(this, true, x+1, y, prochaineZone);
+    	Zones[x+1][y] = new Zone(this, true, getKey.nextBoolean(), x+1, y, prochaineZone);
     	j.setX(x+1);
 	}
     
@@ -209,11 +211,11 @@ class CModele extends Observable {
     
     
     public void MoveBas(int x, int y) {
-    	Zones[x][y] = new Zone(this, false, x, y, ancienneZone);
+    	Zones[x][y] = new Zone(this, false, getKey.nextBoolean(), x, y, ancienneZone);
     	
     	if(y == COTE) y-=1;
     	
-    	Zones[x][y+1] = new Zone(this, true, x, y+1, prochaineZone);
+    	Zones[x][y+1] = new Zone(this, true, getKey.nextBoolean(), x, y+1, prochaineZone);
     	j.setY(y+1);
 	}
     
@@ -231,11 +233,11 @@ class CModele extends Observable {
     
     
     public void MoveHaut(int x, int y) {
-    	Zones[x][y] = new Zone(this, false, x, y, ancienneZone);
+    	Zones[x][y] = new Zone(this, false, getKey.nextBoolean(), x, y, ancienneZone);
     	
     	if(y == 1) y+=1;
     	
-    	Zones[x][y-1] = new Zone(this, true, x, y-1, prochaineZone);
+    	Zones[x][y-1] = new Zone(this, true, getKey.nextBoolean(), x, y-1, prochaineZone);
     	j.setY(y-1);
 	}
     
@@ -370,6 +372,29 @@ class CModele extends Observable {
 		notifyObservers();
     }
     
+    
+    public void recupKey() {
+    	
+    	//Si joueur n'est pas sur une zone qui contient une cle
+    	//Cette variable va permettre de trancher sur le fait de declencher la montee des eaux ou ne rien faire
+    	double innondeOuNormal = Math.random();
+    	
+    	if(Math.random() <= 0.80 && getZone(j.getX(), j.getY()).getKey) {
+    		Key k = new Key(getRandomElement());
+    		j.addKey(k);
+    		getZone(j.getX(), j.getY()).getKey = false;
+    		System.out.println("Elle a maintenant disparu de la zone qui ne possede donc plus de cle pour le moment. Revenez plus tard ! :)");
+    	}
+    	else if(innondeOuNormal <= 0.50){
+    		getZone(j.getX(), j.getY()).z = typeZone.innonde;
+    		System.out.println("Le joueur " + ((this.tour)%3 + 1) + " a cherche une cle et n'aurait pas du ! Sa zone s'innonde.");
+    	}
+    	else if(innondeOuNormal > 0.50)
+    		System.out.println("Le joueur " + ((this.tour)%3 + 1) + " a cherche une cle et n'a rien trouve, il ne se passe rien.");
+    	
+    	nbActions+=1;
+    	notifyObservers();
+    }
     
 
 
