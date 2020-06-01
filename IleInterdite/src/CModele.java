@@ -23,9 +23,10 @@ class CModele extends Observable {
 	static final int COTE = 21;
     /** On stocke un tableau de Zones. */
     private Zone[][] Zones;
-    public Joueur j1 = new Joueur((COTE+1)/2, 1);
-    public Joueur j2 = new Joueur(COTE, (COTE+1)/2);
-    public Joueur j3 = new Joueur(1, (COTE+1)/2);
+    public Joueur j1 = new Joueur((COTE+1)/2, 1, role.ingenieur);
+    public Joueur j2 = new Joueur(COTE, (COTE+1)/2, role.plongeur);
+    public Joueur j3 = new Joueur(1, (COTE+1)/2, role.messager);
+    Joueur[] tabJoueurs = {j1, j2, j3};
     public Zone heliport = new Zone(this, false, false, (COTE+1)/2, COTE, typeZone.heliport);
     
     private int xair = 1+new Random().nextInt(((COTE+1)/2)-1);
@@ -178,9 +179,14 @@ class CModele extends Observable {
     	ancienneZone = Zones[j.getX()][j.getY()].z;
     	prochaineZone = Zones[j.getX() - 1][j.getY()].z;
     	
-    	if(Zones[j.getX() - 1][j.getY()].z == typeZone.submerge) 
-    		System.out.println("la zone est submergée et est donc bloquée");
-    	else {
+	    if(Zones[j.getX() - 1][j.getY()].z == typeZone.submerge) {
+	    	if(j.r != role.plongeur)
+	    		System.out.println("la zone est submergée et est donc bloquée");
+	    	else {
+	    		MoveGauche(j.getX(), j.getY());
+	    		System.out.println("la zone est submergée mais vous etes plongeur, la voie vous est libre !");
+	    	}
+	    } else {
     		MoveGauche(j.getX(), j.getY());
     		if(compteJoueurSurZone(j.getX() + 1, j.getY()) >= 1)
     			Zones[j.getX() + 1][j.getY()].estJoueur = true;
@@ -203,9 +209,14 @@ class CModele extends Observable {
     	ancienneZone = Zones[j.getX()][j.getY()].z;
     	prochaineZone = Zones[j.getX() + 1][j.getY()].z;
     	
-    	if(Zones[j.getX() + 1][j.getY()].z == typeZone.submerge) 
-    		System.out.println("la zone est submergée et est donc bloquée");
-    	else {
+	    if(Zones[j.getX() + 1][j.getY()].z == typeZone.submerge) {
+	    	if(j.r != role.plongeur)
+	    		System.out.println("la zone est submergée et est donc bloquée");
+	    	else {
+	    		MoveDroite(j.getX(), j.getY());
+	    		System.out.println("la zone est submergée mais vous etes plongeur, la voie vous est libre !");
+	    	}
+	    } else {
     		MoveDroite(j.getX(), j.getY());
     		if(compteJoueurSurZone(j.getX() - 1, j.getY()) >= 1)
     			Zones[j.getX() - 1][j.getY()].estJoueur = true;
@@ -228,9 +239,14 @@ class CModele extends Observable {
     	ancienneZone = Zones[j.getX()][j.getY()].z;
     	prochaineZone = Zones[j.getX()][j.getY() + 1].z;
     	
-    	if(Zones[j.getX()][j.getY()+1].z == typeZone.submerge) 
-    		System.out.println("la zone est submergée et est donc bloquée");
-    	else {
+	    if(Zones[j.getX()][j.getY()+1].z == typeZone.submerge) {
+	    	if(j.r != role.plongeur)
+	    		System.out.println("la zone est submergée et est donc bloquée");
+	    	else {
+	    		MoveBas(j.getX(), j.getY());
+	    		System.out.println("la zone est submergée mais vous etes plongeur, la voie vous est libre !");	
+	    	}
+	    } else {
     		MoveBas(j.getX(), j.getY());
     		if(compteJoueurSurZone(j.getX(), j.getY() - 1) >= 1)
     			Zones[j.getX()][j.getY() - 1].estJoueur = true;
@@ -253,9 +269,14 @@ class CModele extends Observable {
     	ancienneZone = Zones[j.getX()][j.getY()].z;
     	prochaineZone = Zones[j.getX()][j.getY() - 1].z;
     	
-    	if(Zones[j.getX()][j.getY()-1].z == typeZone.submerge) 
-    		System.out.println("la zone est submergée et est donc bloquée");
-    	else {
+	    if(Zones[j.getX()][j.getY()-1].z == typeZone.submerge) {
+	    	if(j.r != role.plongeur)
+	    		System.out.println("la zone est submergée et est donc bloquée");
+	    	else {
+	    		MoveHaut(j.getX(), j.getY());
+	    		System.out.println("la zone est submergée mais vous etes plongeur, la voie vous est libre !");
+	    	}
+	    } else {
     		MoveHaut(j.getX(), j.getY());
     		if(compteJoueurSurZone(j.getX(), j.getY() + 1) >= 1)
     			Zones[j.getX()][j.getY() + 1].estJoueur = true;
@@ -324,7 +345,7 @@ class CModele extends Observable {
 	    	else if(getZone(j.getX(), j.getY() - 1).z == typeZone.innonde) {
 	    		if(j.getX() == ensZones[i].getX() && (j.getY() - 1) == ensZones[i].getY())
 	    			getZone(j.getX(), j.getY() - 1).z = ensTypeZone[i];
-	    	}	
+	    	}
     	}
     	int voisinsInnondesApresBoucle = compteZoneInnonde(j.getX(), j.getY());
   	
@@ -431,11 +452,31 @@ class CModele extends Observable {
     	Random r = new Random();
     	Joueur[] tabJoueurs = {j1, j2, j3, j1, j2};
     	for(int i = 0; i < 3; i++) {
+    		
+    		if((this.tour)%3 == i && tabJoueurs[i].r == role.messager && !tabJoueurs[i].keyList.isEmpty()) {
+    			System.out.println("Vous etes le messager, vous avez envoye une cle a un de vos coequipiers ! Quel altruisme ;)");
+    			int randomInt = r.nextInt(j.keyList.size());
+    			Key temp = tabJoueurs[i].keyList.get(randomInt);
+    			if(Math.random() <= 0.50) {
+    				tabJoueurs[i].keyList.remove(randomInt);
+	    			tabJoueurs[i+1].keyList.add(temp);
+	    			if(i < 2)
+	    				System.out.println("Le joueur " + (i+2) + " a recu la cle " + temp.e + " du joueur " + (i+1));
+	    			else
+	    				System.out.println("Le joueur 1 a recu la cle " + temp.e + " du joueur 3");
+    			} else {
+    				tabJoueurs[i].keyList.remove(randomInt);
+	    			tabJoueurs[i+2].keyList.add(temp);
+	    			if(i == 0)
+	    				System.out.println("Le joueur 3 a recu la cle " + temp.e + " du joueur 1");
+	    			else if(i >= 1)
+	    				System.out.println("Le joueur " + i + " a recu la cle " + temp.e + " du joueur " + (i+1));
+    			}
+    		}
     	
 	    	if((this.tour)%3 == i && compteJoueurSurZone(tabJoueurs[i].getX(), tabJoueurs[i].getY()) > 1) {
 		    		
 	    		if(!tabJoueurs[i].keyList.isEmpty()) {
-	    			
 	    			int randomInt = r.nextInt(j.keyList.size());
 	    			Key temp = tabJoueurs[i].keyList.get(randomInt);
 		    		if(getZone(tabJoueurs[i].getX(), tabJoueurs[i].getY()) == getZone(tabJoueurs[i+1].getX(), tabJoueurs[i+1].getY())) {

@@ -43,6 +43,7 @@ class VueCommandes extends JPanel {
     	this.add(boutonDroite);
     	
     	
+    	
 	/**
 	 * Le bouton, lorsqu'il est cliqué par l'utilisateur, produit un
 	 * événement, de classe [ActionEvent].
@@ -98,4 +99,8 @@ class VueCommandes extends JPanel {
          */
 
     }
+
+	public CModele getModele() {
+		return modele;
+	}
 }

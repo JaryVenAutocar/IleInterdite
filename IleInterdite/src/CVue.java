@@ -26,7 +26,7 @@ class CVue{
     public CVue(CModele modele) {
 	/** Définition de la fenêtre principale. */
 	frame = new JFrame();
-	JLabel tourJoueur = new JLabel("Bienvenue dans cette nouvelle partie ! Inaugurons les hostilites avec le joueur 1 (en rouge), ", JLabel.CENTER);
+	JLabel tourJoueur = new JLabel("Bienvenue sur l'ile. Veuillez effectuer une action pour debuter la partie. Votre personnage est le Joueur 1,", JLabel.CENTER);
 	JLabel actions = new JLabel("il lui reste " + (3 - modele.nbActions) + " actions", JLabel.LEFT);
 	frame.add(tourJoueur);
 	frame.add(actions);

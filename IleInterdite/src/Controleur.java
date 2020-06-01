@@ -44,7 +44,14 @@ class Controleur implements ActionListener {
     		modele.avance();
     	}
     	else if(bouton == commandes.boutonAsseche)
-    		modele.asseche();
+    		if(modele.j.r == role.ingenieur) {
+    			System.out.println("Vous etes ingenieur, vous assechez une ou meme deux zones comme bon vous semble !");
+    			modele.nbActions -= 1;
+    			modele.asseche();
+    			modele.asseche();
+    		}
+    		else
+    			modele.asseche();
     	else if(bouton == commandes.boutonGauche)
     		modele.gauche();
     	else if(bouton == commandes.boutonDroite)

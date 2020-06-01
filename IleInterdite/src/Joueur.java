@@ -10,9 +10,10 @@ public class Joueur {
 	public ArrayList<Key> keyList;
 	public ArrayList<element> keyElementList;
 	
-	public Joueur(int x, int y) {
+	public Joueur(int x, int y, role r) {
 		this.x = x;
 		this.y = y;
+		this.r = r;
 		this.keyList = new ArrayList<Key>();
 		this.keyElementList = new ArrayList<element>();
 	}
