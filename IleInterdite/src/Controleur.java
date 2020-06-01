@@ -171,10 +171,8 @@ class Controleur implements ActionListener {
     	//Si tous les artefacts sont en la possession des joueurs
     	//Et si tous les joueurs sont sur la zone de l'heliport
     	if(modele.nbArtefacts == 4) {
-    		if((modele.j1.getX() == modele.j2.getX()) && (modele.j2.getX() == modele.j3.getX()) && (modele.j3.getX() == modele.heliport.getX())) {
-    			if((modele.j1.getY() == modele.j2.getY()) && (modele.j2.getY() == modele.j3.getY()) && (modele.j3.getY() == modele.heliport.getY()))
+    		if(modele.compteJoueurSurZone(modele.heliport.getX(), modele.heliport.getY()) == 3)
     				modele.partieGagnee = true;
-    		}
     	}
     	
     }

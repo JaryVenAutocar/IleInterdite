@@ -1,6 +1,5 @@
 import java.util.*;
 import java.lang.Math;
-import java.util.concurrent.ThreadLocalRandom;
 /**
  * Le modèle : le coeur de l'application.
  *
@@ -23,9 +22,9 @@ class CModele extends Observable {
 	static final int COTE = 21;
     /** On stocke un tableau de Zones. */
     private Zone[][] Zones;
-    public Joueur j1 = new Joueur((COTE+1)/2, 1, role.ingenieur);
-    public Joueur j2 = new Joueur(COTE, (COTE+1)/2, role.plongeur);
-    public Joueur j3 = new Joueur(1, (COTE+1)/2, role.messager);
+    public Joueur j1 = new Joueur((COTE+1)/2, 1, role.normal);
+    public Joueur j2 = new Joueur(COTE, (COTE+1)/2, role.normal);
+    public Joueur j3 = new Joueur(1, (COTE+1)/2, role.normal);
     Joueur[] tabJoueurs = {j1, j2, j3};
     public Zone heliport = new Zone(this, false, false, (COTE+1)/2, COTE, typeZone.heliport);
     
@@ -58,7 +57,6 @@ class CModele extends Observable {
 	 * Pour éviter les problèmes aux bords, on ajoute une ligne et une
 	 * colonne, dont les Zones n'évolueront pas.
 	 */ 
-    	
 		Zones = new Zone[COTE+2][COTE+2];
 		for(int i=0; i<COTE+2; i++) {
 			for(int j=0; j<COTE+2; j++) {
@@ -73,8 +71,23 @@ class CModele extends Observable {
 		Zones[xterre][yterre] = terre;
 		Zones[xeau][yeau] = eau;
 		Zones[xfeu][yfeu] = feu;
+		choixRole();
     }
-
+    
+    
+    public void choixRole() {
+    	final ArrayList<role> roles = new ArrayList<role>();
+    	roles.add(role.ingenieur); roles.add(role.messager); roles.add(role.plongeur);
+    	Random r = new Random();
+    	int randomInt = r.nextInt(roles.size());
+    	Joueur[] tabJoueurs = {j1, j2, j3};
+    	for(int i = 0; i < 2; i++) {
+    		tabJoueurs[i].r = roles.get(randomInt);
+    		roles.remove(randomInt);
+    		randomInt = r.nextInt(roles.size());
+    	}
+    	j3.r = roles.get(0);
+    }
     
     
    /**  
@@ -389,22 +402,22 @@ class CModele extends Observable {
     		
     		Key k = new Key(ensTypeZone[i]);
     		
-    		if(getZone(j.getX() + 1, j.getY()).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 4) {
+    		if(getZone(j.getX() + 1, j.getY()).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 1) {
         	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal; 
         	    nbArtefacts+=1;
     		}
     		
-	    	else if(getZone(j.getX() - 1, j.getY()).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 4) {
+	    	else if(getZone(j.getX() - 1, j.getY()).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 1) {
 	    		getZone(j.getX() - 1, j.getY()).z = typeZone.normal;
 	    		nbArtefacts+=1;
 	    	}
 	    	
-	    	else if(getZone(j.getX(), j.getY() + 1).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 4) {
+	    	else if(getZone(j.getX(), j.getY() + 1).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 1) {
 	    		getZone(j.getX(), j.getY() + 1).z = typeZone.normal;
 	    		nbArtefacts+=1;
 	    	}
 	    	
-	    	else if(getZone(j.getX(), j.getY() - 1).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 4) {
+	    	else if(getZone(j.getX(), j.getY() - 1).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 1) {
 	    		getZone(j.getX(), j.getY() - 1).z = typeZone.normal;
 	    		nbArtefacts+=1;
 	    	}

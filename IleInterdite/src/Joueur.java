@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-enum role {ingenieur, navigateur, plongeur, messager} ;
+enum role {normal, ingenieur, plongeur, messager} ;
 
 public class Joueur {
 
