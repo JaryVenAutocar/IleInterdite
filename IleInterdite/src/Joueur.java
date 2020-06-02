@@ -37,6 +37,28 @@ public class Joueur {
 		return keyElementList.contains(e);
 	}
 	
+	
+	public int nbKeyOfArtefact(element e) {
+    	int res = 0;
+    	for(Key k : this.keyList)
+    		if(k.e == e) res+=1;
+    	return res;
+    }
+	
+	public void afficheClesTer() {
+		if(this.keyElementList.isEmpty()) 
+			System.out.print("Le joueur ne possede pas de cles");
+		else {
+			System.out.println("Il possede les cles suivantes: ");
+			for(element e: element.values()) {
+				int nbKey = nbKeyOfArtefact(e);
+				System.out.print(nbKey + " " + e +" ");
+			}
+		}
+	}
+	
+	
+	
 	public int getX() {
 		return x;
 	}

@@ -33,15 +33,15 @@ class Controleur implements ActionListener {
     public void actionPerformed(ActionEvent e) {
     	
     	
-    	if(!modele.partiePerdue && bouton == commandes.boutonAvance) {
-	    	System.out.println("");
-	    	System.out.println("Nouveau tour !");
-	    	System.out.println("");
-    	}
     	
     	if(bouton == commandes.boutonAvance) {
     		modele.nbActions = 0;
     		modele.avance();
+    		if((modele.tour+1)%3 == 0)
+				System.out.println("\n" + "\n" + "Tour du joueur 3");
+    		else
+    			System.out.println("\n" + "\n" + "Tour du joueur " + ((modele.tour+1)%3));
+    		modele.tabJoueurs[(modele.tour)%3].afficheClesTer();
     	}
     	else if(bouton == commandes.boutonAsseche)
     		if(modele.j.r == role.ingenieur) {
@@ -94,7 +94,7 @@ class Controleur implements ActionListener {
     	}
     	
     	if(modele.partieGagnee) {
-			System.out.println("Vous avez gagne la partie");
+			System.out.println("\n" + "Vous avez gagne la partie");
     		commandes.boutonGauche.setVisible(false);
     	    commandes.boutonDroite.setVisible(false);
     	    commandes.boutonHaut.setVisible(false);
@@ -107,7 +107,7 @@ class Controleur implements ActionListener {
     	}
     	
     	if(modele.partiePerdue) {
-    		System.out.println("Vous avez perdu la partie");
+    		System.out.println("\n" + "Vous avez perdu la partie");
     		commandes.boutonGauche.setVisible(false);
     	    commandes.boutonDroite.setVisible(false);
     	    commandes.boutonHaut.setVisible(false);
@@ -118,8 +118,6 @@ class Controleur implements ActionListener {
     	    commandes.boutonRecupKey.setVisible(false);
     	    commandes.boutonGiveKey.setVisible(false);
     	}
-    	
-    	
     	
     	//Les tours alternent, 3 joueurs donc modulo 3
     	if( (modele.tour)%3 == 0) modele.j = modele.j1;
@@ -133,10 +131,10 @@ class Controleur implements ActionListener {
     		
     		if(modele.partiePerdue == false) {
 	    		if(zoneSpeciale[i].z == typeZone.innonde && bouton == commandes.boutonAvance)
-	    			System.out.println("Cette zone speciale est innondee faites attention : " + typeZoneSpeciale[i]);
+	    			System.out.println("\n" + "Cette zone speciale est innondee faites attention : " + typeZoneSpeciale[i]);
 	
 	    		if(zoneSpeciale[i].z == typeZone.submerge && bouton == commandes.boutonAvance)
-	    			System.out.println("Cette zone speciale est submergee c'est perdu : " + typeZoneSpeciale[i]);
+	    			System.out.println("\n" + "Cette zone speciale est submergee c'est perdu : " + typeZoneSpeciale[i]);
 	    		
 	    		if(zoneSpeciale[i].z == typeZone.submerge)
 					modele.partiePerdue = true;
@@ -173,6 +171,12 @@ class Controleur implements ActionListener {
     	if(modele.nbArtefacts == 4) {
     		if(modele.compteJoueurSurZone(modele.heliport.getX(), modele.heliport.getY()) == 3)
     				modele.partieGagnee = true;
+    	}
+    	
+    	
+    	if(!modele.partiePerdue && bouton == commandes.boutonAvance) {
+	    	//System.out.println("Nouveau tour !");
+	    	System.out.println("");
     	}
     	
     }

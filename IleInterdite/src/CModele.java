@@ -25,7 +25,7 @@ class CModele extends Observable {
     public Joueur j1 = new Joueur((COTE+1)/2, 1, role.normal);
     public Joueur j2 = new Joueur(COTE, (COTE+1)/2, role.normal);
     public Joueur j3 = new Joueur(1, (COTE+1)/2, role.normal);
-    Joueur[] tabJoueurs = {j1, j2, j3};
+    Joueur[] tabJoueurs = {j1, j2, j3, j1, j2};
     public Zone heliport = new Zone(this, false, false, (COTE+1)/2, COTE, typeZone.heliport);
     
     private int xair = 1+new Random().nextInt(((COTE+1)/2)-1);
@@ -88,27 +88,6 @@ class CModele extends Observable {
     	}
     	j3.r = roles.get(0);
     }
-    
-    
-   /**  
-    * Pour tester la fonction evalue
-    * 
-     public void compteTypeZone() {	
-    	int resInnonde = 0;
-    	int resSubmerge = 0;
-    	int resNormale = 0;
-    	for(int i=0; i<COTE+2; i++) {
-			for(int j=0; j<COTE+2; j++) {
-				if (Zones[i][j].z == typeZone.normal) resNormale +=1;
-				if (Zones[i][j].z == typeZone.innonde) resInnonde +=1;
-				if (Zones[i][j].z == typeZone.submerge) resSubmerge +=1;
-			}
-    	}
-    	System.out.println("il y a " + resNormale + " cases normales ");
-    	System.out.println("il y a " + resInnonde + " cases innondees ");
-    	System.out.println("il y a " + resSubmerge + " cases submergees ");
-    } **/
-    
     
     
     protected Zone[][] evalue() {  	
@@ -320,20 +299,21 @@ class CModele extends Observable {
     
     public void asseche() {
     	
-    	Zone[] ensZones = {air, eau, terre, feu};
-    	typeZone[] ensTypeZone = {air.z, eau.z, terre.z, feu.z};
+    	Zone[] ensZones = {heliport, air, eau, terre, feu};
+    	typeZone[] ensTypeZone = {heliport.z, air.z, eau.z, terre.z, feu.z};
     	
     	typeZone tempAir = typeZone.air; typeZone tempFeu = typeZone.feu;
-    	typeZone tempEau = typeZone.eau; typeZone tempTerre = typeZone.terre;
+    	typeZone tempEau = typeZone.eau; typeZone tempTerre = typeZone.terre; typeZone tempHeliport = typeZone.heliport;
     	
     	int voisinsInnondesAvantBoucle = compteZoneInnonde(j.getX(), j.getY());
     	
     	for(int i = 0; i < ensZones.length; i++) {
     		
-    		if(i == 0) ensTypeZone[i] = tempAir;
-    		else if(i == 1) ensTypeZone[i] = tempEau;
-    		else if(i == 2) ensTypeZone[i] = tempTerre;
-    		else if(i == 3) ensTypeZone[i] = tempFeu;
+    		if(i == 0) ensTypeZone[i] = tempHeliport;
+    		else if(i == 1) ensTypeZone[i] = tempAir;
+    		else if(i == 2) ensTypeZone[i] = tempEau;
+    		else if(i == 3) ensTypeZone[i] = tempTerre;
+    		else if(i == 4) ensTypeZone[i] = tempFeu;
     		
     		if(getZone(j.getX(), j.getY()).z == typeZone.innonde) {
     			if(j.getX() == ensZones[i].getX() && j.getY() == ensZones[i].getY())
@@ -363,8 +343,9 @@ class CModele extends Observable {
     	int voisinsInnondesApresBoucle = compteZoneInnonde(j.getX(), j.getY());
   	
     	if(voisinsInnondesAvantBoucle == voisinsInnondesApresBoucle) {
-	    	if(getZone(j.getX(), j.getY()).z == typeZone.innonde)
-				getZone(j.getX(), j.getY()).z = typeZone.normal;
+	    	if(getZone(j.getX(), j.getY()).z == typeZone.innonde) {
+	    			getZone(j.getX(), j.getY()).z = typeZone.normal;
+	    	}
 	    	
 	    	else if(getZone(j.getX() + 1, j.getY()).z == typeZone.innonde) 
 	        	getZone(j.getX() + 1, j.getY()).z = typeZone.normal;
@@ -400,7 +381,7 @@ class CModele extends Observable {
     	
     	for(int i = 0; i < ensTypeZone.length; i++) {
     		
-    		Key k = new Key(ensTypeZone[i]);
+    		Key k = new Key(ensElement[i]);
     		
     		if(getZone(j.getX() + 1, j.getY()).z == ensTypeZone[i] && j.getKeyElement(k.e) && nbKeyOfArtefact(j, ensElement[i]) >= 1) {
         	    getZone(j.getX() + 1, j.getY()).z = typeZone.normal; 
@@ -515,41 +496,6 @@ class CModele extends Observable {
     	}
     	nbActions+=1;
     	notifyObservers();
-    }
-    
-
-
-    /**
-     * Méthode auxiliaire : compte le nombre de voisines vivantes d'une
-     * Zone désignée par ses coordonnées.
-     */
-    protected int compteVoisines(int x, int y) {
-    	int res=0;
-	/**
-	 * Stratégie simple à écrire : on compte les Zones vivantes dans le
-	 * carré 3x3 centré autour des coordonnées (x, y), puis on retire 1
-	 * si la Zone centrale est elle-même vivante.
-	 * On n'a pas besoin de traiter à part les bords du tableau de Zones
-	 * grâce aux lignes et colonnes supplémentaires qui ont été ajoutées
-	 * de chaque côté (dont les Zones sont mortes et n'évolueront pas).
-	 */
-		for(int i=x-1; i<=x+1; i++) {
-		    for(int j=y-1; j<=y+1; j++) {
-		    	if (Zones[i][j].z == typeZone.normal) { 
-		    		res++; 
-		    	}
-		    }
-		}
-		return res;
-	/**
-	 * L'expression [(c)?e1:e2] prend la valeur de [e1] si [c] vaut [true]
-	 * et celle de [e2] si [c] vaut [false].
-	 * Cette dernière ligne est donc équivalente à
-	 *     int v;
-	 *     if (Zones[x][y].etat) { v = res - 1; }
-	 *     else { v = res - 0; }
-	 *     return v;
-	 */
     }
 
     /**

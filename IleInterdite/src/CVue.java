@@ -30,7 +30,7 @@ class CVue{
 	JLabel actions = new JLabel("il lui reste " + (3 - modele.nbActions) + " actions", JLabel.LEFT);
 	frame.add(tourJoueur);
 	frame.add(actions);
-	frame.setTitle("Ile Interdite");
+	frame.setTitle("Ile Interdite, by Jary Vallimamode Damien Ouzillou et Marius Seve");
 	
 	/**
 	 * On précise un mode pour disposer les différents éléments à
