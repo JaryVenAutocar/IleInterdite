@@ -175,7 +175,6 @@ class Controleur implements ActionListener {
     	
     	
     	if(!modele.partiePerdue && bouton == commandes.boutonAvance) {
-	    	//System.out.println("Nouveau tour !");
 	    	System.out.println("");
     	}
     	
