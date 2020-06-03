@@ -1,25 +1,6 @@
 import java.util.*;
 
 /**
- * Application avec interface graphique.
- * Thibaut Balabonski, Université Paris-Sud.
- * Matériel pédagogique lié au cours POGL, séance du 20 avril 2020.
- * 
- * Un principe directeur est la séparation stricte des deux parties suivantes :
- *  - Le coeur de l'application, appelé le modèle, où est fait l'essentiel
- *    du travail.
- *  - L'interface utilisateur, appelée la vue, qui à la fois montre des choses
- *    à l'utilisateur et lui fournit des moyens d'interagir.
- *
- * Notre cas d'étude : le jeu de la vie de Conway.
- * Une grille bidimensionnelle de dimensions finies est peuplée de Zones
- * pouvant être vivantes ou mortes. À chaque tour un nouvel état est calculé
- * pour chaque Zone en fonction de l'état de ses voisines immédiates.
- * Un bouton permet de passer au tour suivant (on dit aussi la génération
- * suivante).
- */
-
-/**
  * Un lien entre vue et modèle : les informations montrées à l'utilisateur
  * reflètent l'état du modèle et doivent être maintenues à jour.
  * 
@@ -60,10 +41,13 @@ abstract class Observable {
      */
     private ArrayList<Observer> observers;
     
+    
+    /** Constructeur */
     public Observable() {
     	this.observers = new ArrayList<Observer>();
     }
     
+    /** Methode permettant d'ajouter un observer a la liste d'observateurs */
     public void addObserver(Observer o) {
     	observers.add(o);
     }

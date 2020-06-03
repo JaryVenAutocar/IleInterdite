@@ -5,53 +5,66 @@ import javax.swing.JButton;
 /**
  * Classe pour notre contrôleur rudimentaire.
  * 
- * Le contrôleur implémente l'interface [ActionListener] qui demande
- * uniquement de fournir une méthode [actionPerformed] indiquant la
- * réponse du contrôleur à la réception d'un événement.
+ * Le contrôleur implemente l'interface [ActionListener] qui demande
+ * uniquement de fournir une methode [actionPerformed] indiquant la
+ * reponse du contrôleur a la reception d'un evenement.
  */
 class Controleur implements ActionListener {
     /**
-     * On garde un pointeur vers le modèle, car le contrôleur doit
-     * provoquer un appel de méthode du modèle.
+     * On garde un pointeur vers le modele, car le contrôleur doit
+     * provoquer un appel de methode du modele.
      * Remarque : comme cette classe est interne, cette inscription
-     * explicite du modèle est inutile. On pourrait se contenter de
-     * faire directement référence au modèle enregistré pour la classe
+     * explicite du modele est inutile. On pourrait se contenter de
+     * faire directement reference au modele enregistre pour la classe
      * englobante [VueCommandes].
      */
     CModele modele;
     JButton bouton;
     VueCommandes commandes;
+    
+    
+    /** Constructeur */
     public Controleur(CModele modele, VueCommandes commandes, JButton bouton) { 
     	this.modele = modele;
     	this.commandes = commandes;
     	this.bouton = bouton;
-    	}
+    }
+    
+    
     /**
-     * Action effectuée à réception d'un événement : appeler la
-     * méthode [avance] du modèle.
+     * Action effectuee a reception d'un evenement : appeler la
+     * methode [avance] du modele.
      */
     public void actionPerformed(ActionEvent e) {
     	
-    	
-    	
+    	/** Si le joueur appuie sur le bouton fin de tour, 3 zones s'innondent et le joueur dont c'est le
+    	 * tour possede a present 3 actions possibles
+    	 */
     	if(bouton == commandes.boutonAvance) {
-    		modele.nbActions = 0;
+    		modele.setNbActions(0);
     		modele.avance();
-    		if((modele.tour+1)%3 == 0)
+    		if((modele.getTour()+1)%3 == 0)
 				System.out.println("\n" + "\n" + "Tour du joueur 3");
     		else
-    			System.out.println("\n" + "\n" + "Tour du joueur " + ((modele.tour+1)%3));
-    		modele.tabJoueurs[(modele.tour)%3].afficheClesTer();
-    	}
-    	else if(bouton == commandes.boutonAsseche)
-    		if(modele.j.r == role.ingenieur) {
+    			System.out.println("\n" + "\n" + "Tour du joueur " + ((modele.getTour()+1)%3));
+    		modele.tabJoueurs[(modele.getTour())%3].afficheCles();
+    	
+    		
+    		/** Si le joueur appuie sur le bouton asseche, soit il est ingenieur et il peut assecher
+    		 * 2 zones, soit il ne l'est pas et il peut en assecher une
+    		 */
+    	} else if(bouton == commandes.boutonAsseche)
+    		if(modele.getJ().getRole() == role.ingenieur) {
     			System.out.println("Vous etes ingenieur, vous assechez une ou meme deux zones comme bon vous semble !");
-    			modele.nbActions -= 1;
+    			modele.setNbActions(modele.getNbActions()-1);
     			modele.asseche();
     			modele.asseche();
     		}
     		else
     			modele.asseche();
+    	
+    	
+    	/** On affecte a chaque bouton son utilite, ce qu'il fait dans le jeu */
     	else if(bouton == commandes.boutonGauche)
     		modele.gauche();
     	else if(bouton == commandes.boutonDroite)
@@ -67,8 +80,9 @@ class Controleur implements ActionListener {
     	else
     		modele.bas();
     	
-    	//Maximum 3 actions par tour
-    	if(modele.nbActions > 2) {
+    	
+    	/** Maximum 3 actions par tour */
+    	if(modele.getNbActions() > 2) {
     	    commandes.boutonGauche.setEnabled(false);
     	    commandes.boutonDroite.setEnabled(false);
     	    commandes.boutonHaut.setEnabled(false);
@@ -80,8 +94,9 @@ class Controleur implements ActionListener {
     	    commandes.boutonAvance.setEnabled(true);	    
     		}
     	
-    	//A chaque debut de tour, toutes les cases sont à nouveau disponibles
-    	if(modele.nbActions == 0) {
+    	
+    	/** A chaque debut de tour, toutes les cases sont a nouveau disponibles */
+    	if(modele.getNbActions() == 0) {
     		commandes.boutonGauche.setEnabled(true);
     	    commandes.boutonDroite.setEnabled(true);
     	    commandes.boutonHaut.setEnabled(true);
@@ -93,7 +108,9 @@ class Controleur implements ActionListener {
     	    commandes.boutonGiveKey.setEnabled(true);
     	}
     	
-    	if(modele.partieGagnee) {
+    	
+    	/** Fin de partie gagnante */
+    	if(modele.isGagnee()) {
 			System.out.println("\n" + "Vous avez gagne la partie");
     		commandes.boutonGauche.setVisible(false);
     	    commandes.boutonDroite.setVisible(false);
@@ -106,7 +123,9 @@ class Controleur implements ActionListener {
     	    commandes.boutonGiveKey.setVisible(false);
     	}
     	
-    	if(modele.partiePerdue) {
+    	
+    	/** Fin de partie perdante */
+    	if(modele.isPerdue()) {
     		System.out.println("\n" + "Vous avez perdu la partie");
     		commandes.boutonGauche.setVisible(false);
     	    commandes.boutonDroite.setVisible(false);
@@ -119,64 +138,82 @@ class Controleur implements ActionListener {
     	    commandes.boutonGiveKey.setVisible(false);
     	}
     	
-    	//Les tours alternent, 3 joueurs donc modulo 3
-    	if( (modele.tour)%3 == 0) modele.j = modele.j1;
-    	else if( (modele.tour)%3 == 1) modele.j = modele.j2;
-    	else modele.j = modele.j3;
     	
-    	Zone[] zoneSpeciale = {modele.heliport, modele.air, modele.eau, modele.feu, modele.terre};
+    	/** Les tours alternent, 3 joueurs donc modulo 3 */
+    	if( (modele.getTour())%3 == 0) modele.setJ(modele.getJ1());
+    	else if( (modele.getTour())%3 == 1) modele.setJ(modele.getJ2());
+    	else modele.setJ(modele.getJ3());
+    	
+    	
+    	/** 
+     	Deux tableaux pour pouvoir acceder a notre guise aux typeZone et aux zones
+    	selon nos besoins et selon les types des parametres des fonctions utilisees
+    	Ceux ci sont volontairement disposes dans le meme ordre 	
+    	**/
+    	Zone[] zoneSpeciale = {modele.getHeliport(), modele.getAir(), modele.getEau(), modele.getFeu(), modele.getTerre()};
     	typeZone[] typeZoneSpeciale = {typeZone.heliport, typeZone.air, typeZone.eau, typeZone.feu, typeZone.terre};
     	
+    	
+    	/** Prevenir qu'une zone speciale est inondee ou submergee et faire terminer la partie
+    	 * si une zone speciale est submergee
+    	 */
     	for(int i = 0; i < zoneSpeciale.length; i++) {
     		
-    		if(modele.partiePerdue == false) {
-	    		if(zoneSpeciale[i].z == typeZone.innonde && bouton == commandes.boutonAvance)
+    		if(modele.isPerdue() == false) {
+	    		if(zoneSpeciale[i].getTypeZone() == typeZone.innonde && bouton == commandes.boutonAvance)
 	    			System.out.println("\n" + "Cette zone speciale est innondee faites attention : " + typeZoneSpeciale[i]);
 	
-	    		if(zoneSpeciale[i].z == typeZone.submerge && bouton == commandes.boutonAvance)
+	    		if(zoneSpeciale[i].getTypeZone() == typeZone.submerge && bouton == commandes.boutonAvance)
 	    			System.out.println("\n" + "Cette zone speciale est submergee c'est perdu : " + typeZoneSpeciale[i]);
 	    		
-	    		if(zoneSpeciale[i].z == typeZone.submerge)
-					modele.partiePerdue = true;
+	    		if(zoneSpeciale[i].getTypeZone() == typeZone.submerge)
+					modele.setPartiePerdue(true);
     		}
     	}
     	
     	
-    	//Si le joueur est sur le contour visible des bordures du jeu	
-    	if(modele.j.getX() == 1 || modele.j.getX() == modele.COTE || modele.j.getY() == 1 || modele.j.getY() == modele.COTE) {
+    	/** Si le joueur est sur le contour visible des bordures du jeu
+    	 * Cette partie sert a verifier quand est ce que le joueur s'est noye et donc a mettre fin au jeu
+    	 */
+    	if(modele.getJ().getX() == 1 || modele.getJ().getX() == modele.COTE || modele.getJ().getY() == 1 || modele.getJ().getY() == modele.COTE) {
     		
-    		//Si le joueur est sur un des 4 recoins du jeu
-    		if(modele.j.getX() == modele.j.getY() || (modele.j.getX() == 1 && modele.j.getY() == modele.COTE) || (modele.j.getX() == modele.COTE && modele.j.getY() == 1)) {
-    			if(modele.compteZoneSubmerge(modele.j.getX(), modele.j.getY()) == 2) {
-    				System.out.println("Le joueur " + ((modele.tour)%3 + 1) + " s'est noye");
-    				modele.partiePerdue = true;
+    		
+    		/** Si le joueur est sur un des 4 recoins du jeu */
+    		if(modele.getJ().getX() == modele.getJ().getY() || (modele.getJ().getX() == 1 && modele.getJ().getY() == modele.COTE) || (modele.getJ().getX() == modele.COTE && modele.getJ().getY() == 1)) {
+    			if(modele.compteZoneSubmerge(modele.getJ().getX(), modele.getJ().getY()) == 2) {
+    				System.out.println("Le joueur " + ((modele.getTour())%3 + 1) + " s'est noye");
+    				modele.setPartiePerdue(true);
     			}
     		}
     		
-    		if(modele.compteZoneSubmerge(modele.j.getX(), modele.j.getY()) == 3) {
-    			System.out.println("Le joueur " + ((modele.tour)%3 + 1) + " s'est noye");
-    			modele.partiePerdue = true;
+    		/** Si le joueur est sur un des 4 cotes du jeu */
+    		if(modele.compteZoneSubmerge(modele.getJ().getX(), modele.getJ().getY()) == 3) {
+    			System.out.println("Le joueur " + ((modele.getTour())%3 + 1) + " s'est noye");
+    			modele.setPartiePerdue(true);
     		}
     	}	
     	
     	
-    	//Si le joueur est n'importe ou sauf sur les bordures
-    	else if(modele.compteZoneSubmerge(modele.j.getX(), modele.j.getY()) == 4) {
-    		System.out.println("Le joueur " + ((modele.tour)%3 + 1) + " s'est noye");
-    		modele.partiePerdue = true;
+    	/** Si le joueur est n'importe ou sauf sur les bordures */
+    	else if(modele.compteZoneSubmerge(modele.getJ().getX(), modele.getJ().getY()) == 4) {
+    		System.out.println("Le joueur " + ((modele.getTour())%3 + 1) + " s'est noye");
+    		modele.setPartiePerdue(true);
     	}
     
-    	//Si tous les artefacts sont en la possession des joueurs
-    	//Et si tous les joueurs sont sur la zone de l'heliport
-    	if(modele.nbArtefacts == 4) {
-    		if(modele.compteJoueurSurZone(modele.heliport.getX(), modele.heliport.getY()) == 3)
-    				modele.partieGagnee = true;
+    	
+    	/** Si tous les artefacts sont en la possession des joueurs
+    	* Et si tous les joueurs sont sur la zone de l'heliport :
+    	* la partie est gagnee
+        */
+    	if(modele.getNbArtefacts() == 4) {
+    		if(modele.compteJoueurSurZone(modele.getHeliport().getX(), modele.getHeliport().getY()) == 3)
+    				modele.setPartieGagnee(true);
     	}
     	
     	
-    	if(!modele.partiePerdue && bouton == commandes.boutonAvance) {
+    	/** Pour l'affichage console, pour epurer on rajoute une ligne */
+    	if(!modele.isPerdue() && bouton == commandes.boutonAvance) {
 	    	System.out.println("");
     	}
-    	
     }
 }

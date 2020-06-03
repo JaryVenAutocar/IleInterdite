@@ -27,25 +27,18 @@ class CVue{
 	/** Définition de la fenêtre principale. */
 	frame = new JFrame();
 	JLabel tourJoueur = new JLabel("Bienvenue sur l'ile. Veuillez effectuer une action pour debuter la partie. Votre personnage est le Joueur 1,", JLabel.CENTER);
-	JLabel actions = new JLabel("il lui reste " + (3 - modele.nbActions) + " actions", JLabel.LEFT);
+	JLabel actions = new JLabel("il lui reste " + (3 - modele.getNbActions()) + " actions", JLabel.LEFT);
 	frame.add(tourJoueur);
 	frame.add(actions);
 	frame.setTitle("Ile Interdite, by Jary Vallimamode Damien Ouzillou et Marius Seve");
 	
 	/**
 	 * On précise un mode pour disposer les différents éléments à
-	 * l'intérieur de la fenêtre. Quelques possibilités sont :
-	 *  - BorderLayout (défaut pour la classe JFrame) : chaque élément est
-	 *    disposé au centre ou le long d'un bord.
-	 *  - FlowLayout (défaut pour un JPanel) : les éléments sont disposés
+	 * l'intérieur de la fenêtre.
+	 *    FlowLayout (défaut pour un JPanel) : les éléments sont disposés
 	 *    l'un à la suite de l'autre, dans l'ordre de leur ajout, les lignes
 	 *    se formant de gauche à droite et de haut en bas. Un élément peut
 	 *    passer à la ligne lorsque l'on redimensionne la fenêtre.
-	 *  - GridLayout : les éléments sont disposés l'un à la suite de
-	 *    l'autre sur une grille avec un nombre de lignes et un nombre de
-	 *    colonnes définis par le programmeur, dont toutes les Zones ont la
-	 *    même dimension. Cette dimension est calculée en fonction du
-	 *    nombre de Zones à placer et de la dimension du contenant.
 	 */
 	frame.setLayout(new FlowLayout());
 
@@ -54,15 +47,6 @@ class CVue{
 	frame.add(grille);
 	commandes = new VueCommandes(modele);
 	frame.add(commandes);
-	/**
-	 * Remarque : on peut passer à la méthode [add] des paramètres
-	 * supplémentaires indiquant où placer l'élément. Par exemple, si on
-	 * avait conservé la disposition par défaut [BorderLayout], on aurait
-	 * pu écrire le code suivant pour placer la grille à gauche et les
-	 * commandes à droite.
-	 *     frame.add(grille, BorderLayout.WEST);
-	 *     frame.add(commandes, BorderLayout.EAST);
-	 */
 
 	/**
 	 * Fin de la plomberie :
